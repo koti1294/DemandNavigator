@@ -1,0 +1,5 @@
+<apex:page Controller="DemandForcecaseCSV" cache="true" contentType="application/vnd.ms-excel#DemandForcecase.xls">
+     
+     <div id="DemandData"></div>
+     <script>document.getElementById('DemandData').innerHTML = '{!JSENCODE(input)}';</script>  
+</apex:page>

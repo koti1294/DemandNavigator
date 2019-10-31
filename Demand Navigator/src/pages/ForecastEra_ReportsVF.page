@@ -1,0 +1,253 @@
+<apex:page showHeader="true" sidebar="false"  docType="html-5.0">     
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+        <head>
+            <title>Report</title>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS090, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+
+        </head>    
+
+        <body>
+           
+            <!-- REQUIRED SLDS WRAPPER -->
+            <div class="slds">    
+
+                <!-- MASTHEAD -->
+                <!-- / MASTHEAD -->    
+
+                <!-- PAGE HEADER -->
+                <div class="slds-page-header" role="banner">
+
+                    <!-- PAGE HEADER TOP ROW -->
+                    <div class="slds-grid">
+
+                        <!-- PAGE HEADER / ROW 1 / COLUMN 1 -->
+                        <div class="slds-col">
+
+                            <!-- HEADING AREA -->
+                            <!-- MEDIA OBJECT = FIGURE + BODY -->
+                            <div class="slds-media">
+
+                                <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-user">
+                                        <use xlink:href="{!URLFOR($Resource.SLDS090, 'assets/icons/standard-sprite/svg/symbols.svg#report')}"></use>
+                                    </svg>
+                                </div>
+
+                                <div class="slds-media__body">
+                                    <p class="slds-text-heading--label">Report</p>
+                                    <h1 class="slds-text-heading--medium">Forecastera<sup>TM</sup> Report</h1>                                 
+                                </div>
+                                
+                                
+
+                            </div>
+                            <!-- / MEDIA OBJECT -->
+                            <!-- HEADING AREA -->
+
+                        </div>
+                        <!-- / PAGE HEADER / ROW 1 / COLUMN 1 -->
+
+                        
+
+                    </div>
+                    
+                    <!-- / PAGE HEADER DETAIL ROW -->
+
+
+                </div>
+                <!-- / PAGE HEADER -->
+
+
+                <!-- PRIMARY CONTENT WRAPPER -->
+                
+                 <div class="myapp">
+                    <ul class="slds-list--vertical slds-has-dividers">
+                    <li class="slds-list__item">
+                            <div class="slds-media slds-tile">
+                              <!--<div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon icon-doctype-zip">
+                                  <use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#zip"></use>
+                                </svg>
+                              </div>-->
+                              <div class="slds-media__body">
+                                <p class="slds-tile__title slds-truncate"><a href="/apex/LT_ReportSummary" >Forecast Summary by Confidence Level</a></p>
+                                <ul class="slds-tile__detail slds-list--horizontal slds-has-dividers slds-text-body--small">
+                                  <li class="slds-text slds-list__item">
+                                  <p class="slds-text-body--regular"> 
+                                 Review the forecast summarized by confidence level in a waterfall format with Account and Opportunity Details.
+                                  </p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </li>
+                          <li class="slds-list__item">
+                            <div class="slds-media slds-tile">
+                              <!--<div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon icon-doctype-zip">
+                                  <use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#zip"></use>
+                                </svg>
+                              </div>-->
+                              <div class="slds-media__body">
+                                <p class="slds-tile__title slds-truncate"><a href="/apex/LT_VeryNewReportSummary">Performance Tracker ( Budget vs Forecast vs Gap)</a></p>
+                                <ul class="slds-tile__detail slds-list--horizontal slds-has-dividers slds-text-body--small">
+                                  <li class="slds-text slds-list__item">
+                                  <p class="slds-text-body--regular"> 
+                                  Track Forecast, Gap plan and Budget variance for selected fiscal year.
+                                  </p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </li>
+                          <li class="slds-list__item">
+                            <div class="slds-media slds-tile">
+                              <!--<div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon icon-doctype-zip">
+                                  <use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#zip"></use>
+                                </svg>
+                              </div>-->
+                              <div class="slds-media__body">
+                                <p class="slds-tile__title slds-truncate"><a href="/apex/LT_ComparePlanningVersion">Comparison of Planning Versions ( Budget vs Forecast)</a></p>
+                                <ul class="slds-tile__detail slds-list--horizontal slds-has-dividers slds-text-body--small">
+                                  <li class="slds-text slds-list__item">
+                                  <p class="slds-text-body--regular">
+                                      Provides comparison of various plan versions like Budget vs Forecast and Prior vs Current Forecast.
+                                  </p>
+                                   </li>
+                                </ul>
+                              </div>
+                            </div>
+                           </li>
+                           <li class="slds-list__item">
+                            <div class="slds-media slds-tile">
+                              <!--<div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon icon-doctype-zip">
+                                  <use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#zip"></use>
+                                </svg>
+                              </div>-->
+                               <div class="slds-media__body">
+                                <p class="slds-tile__title slds-truncate"><a href="/apex/LT_Planning_Measure_by_Period" >Forecast/Plan Roll Up by Business Unit and Account</a></p>
+                                <ul class="slds-tile__detail slds-list--horizontal slds-has-dividers slds-text-body--small">
+                                  <li class="slds-text slds-list__item">
+                                  <p class="slds-text-body--regular"> 
+                                  Review the forecast/plan data for planning measures like revenue, sales booking, headcount by Business Unit and Account for selected period.
+                                  </p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </li>      
+                          <li class="slds-list__item">
+                            <div class="slds-media slds-tile">
+                              <!--<div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon icon-doctype-zip">
+                                  <use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#zip"></use>
+                                </svg>
+                              </div>-->
+                              <div class="slds-media__body">
+                                <p class="slds-tile__title slds-truncate"><a href="/apex/LT_Planning_Measure_by_Period3">Forecast/Plan Summary by Role and Period</a></p>
+                                <ul class="slds-tile__detail slds-list--horizontal slds-has-dividers slds-text-body--small">
+                                  <li class="slds-text slds-list__item">
+                                      
+                                      <p class="slds-text-body--regular">
+                                            Review data for planning measures like revenue, sales booking, headcount by Role for selected period.
+                                      </p>                                    
+                                  
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </li>
+                          <li class="slds-list__item">
+                            <div class="slds-media slds-tile">
+                              <!--<div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon icon-doctype-zip">
+                                  <use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#zip"></use>
+                                </svg>
+                              </div>-->
+                              <div class="slds-media__body">
+                                <p class="slds-tile__title slds-truncate"><a href="/apex/LT_Revenue_Backlog_by_Period_or_Quarter">Revenue backlog By Period or Quarter</a></p>
+                                <ul class="slds-tile__detail slds-list--horizontal slds-has-dividers slds-text-body--small">
+                                  <li class="slds-text slds-list__item">
+                                      
+                                      <p class="slds-text-body--regular">
+                                            Review the Revenue Backlog at an Account or Opportunity Level across Fiscal Periods or Quarters for Closed Planning Versions.
+                                      </p>                                                                       
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </li>
+                           <li class="slds-list__item">
+                            <div class="slds-media slds-tile">
+                              <!--<div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon icon-doctype-zip">
+                                  <use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#zip"></use>
+                                </svg>
+                              </div>-->
+                              <div class="slds-media__body">
+                                <p class="slds-tile__title slds-truncate"><a href="/apex/LT_Total_Backlog_by_Roles">Backlog by Role Hierarchy</a></p>
+                                <ul class="slds-tile__detail slds-list--horizontal slds-has-dividers slds-text-body--small">
+                                  <li class="slds-text slds-list__item">
+                                  <p class="slds-text-body--regular">
+                                      Review the Revenue Backlog at a Role Hierarchy or Account Owner Level across Fiscal Periods or Quarters for Closed Planning Versions.
+                                  </p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </li>
+                           <li class="slds-list__item">
+                            <div class="slds-media slds-tile">
+                              <!--<div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon icon-doctype-zip">
+                                  <use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#zip"></use>
+                                </svg>
+                              </div>-->
+                              <div class="slds-media__body">
+                                <p class="slds-tile__title slds-truncate"><a href="/apex/LT_Revenue_prioritization_report">Revenue Prioritization</a></p>
+                                <ul class="slds-tile__detail slds-list--horizontal slds-has-dividers slds-text-body--small">
+                                  <li class="slds-text slds-list__item">
+                                  <p class="slds-text-body--regular">
+                                      Prioritize open opportunities with the highest Revenue potential across selected period.
+                                  </p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </li>
+                          <li class="slds-list__item">
+                            <div class="slds-media slds-tile">
+                              <!--<div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon icon-doctype-zip">
+                                  <use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#zip"></use>
+                                </svg>
+                              </div>-->
+                              <div class="slds-media__body">
+                                <p class="slds-tile__title slds-truncate"><a href="/apex/LT_Bookings_prioritization_report">Bookings Prioritization</a></p>
+                                <ul class="slds-tile__detail slds-list--horizontal slds-has-dividers slds-text-body--small">
+                                  <li class="slds-text slds-list__item">
+                                  <p class="slds-text-body--regular">
+                                      Prioritize open opportunities with the highest Booking potential across selected period.
+                                  </p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </li>                                                
+                         </ul>
+               
+                </div>
+
+            </div>
+            <!-- / REQUIRED SLDS WRAPPER --> 
+
+            
+        </body>    
+
+        <!-- JAVASCRIPT -->
+        <!-- / JAVASCRIPT -->    
+
+    </html>
+</apex:page>

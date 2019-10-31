@@ -1,0 +1,77 @@
+<apex:page standardController="Demand_Configuration_Ratio__c" extensions="DemandConfigurationController">
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> -->
+    <apex:includeScript value="{!URLFOR($Resource.jquery_3_1_1_min)}"/>
+    <apex:form > 
+        <apex:pageBlock id="pgblock">
+            <apex:pageMessages id="pgmsg"/>
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="save" action="{!saveDemandRatio}" status="status" rerender="pgmsg"/>
+                <apex:commandButton value="reset" action="{!reset}" rerender="pgblock"/>
+                <apex:actionStatus id="status" StartText="Saving.." StopText=""/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection collapsible="false">
+                <apex:pageBlockSectionItem >                 
+                    <apex:outputpanel >                      
+                        <apex:pageBlockTable value="{!OnSiteOption}" var="on">  
+                            <apex:column >
+                            <apex:facet name="header"> 
+                                <apex:inputCheckbox onclick="checkAll('onsite',this)"/>
+                            </apex:facet>
+                            <apex:inputcheckbox id="onsitecheckbox" value="{!on.ischeck}" onclick="checkIndv(this ,'onsite{!on.rid}')">
+                            </apex:inputCheckbox>
+                            </apex:column>
+                            <apex:column headervalue="OnSite" value="{!on.Label}"/>
+                            <apex:column headervalue="Staffing Ratio">
+                                <apex:inputText id="onsiteamount" styleclass="onsite{!on.rid}"  value="{!on.Amount}"/>
+                            </apex:column>  
+                        </apex:pageBlockTable>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    
+                    <apex:outputpanel >
+                        <apex:pageBlockTable value="{!offshoreOption}" var="off">   
+                            <apex:column >
+                            <apex:facet name="header"> 
+                                <apex:inputCheckbox onclick="checkAll('offshore',this)"/>
+                            </apex:facet>
+                            <apex:inputcheckbox id="offshorecheckbox" value="{!off.ischeck}" onclick="checkIndv(this ,'offshore{!off.rid}')">
+                            </apex:inputCheckbox>
+                            </apex:column>
+                            <apex:column headervalue="Offshore" value="{!off.Label}"/>
+                            <apex:column headervalue="Staffing Ratio">
+                                <apex:inputText id="offshoreamount" styleclass="offshore{!off.rid}" value="{!off.Amount}"/>
+                            </apex:column>  
+                        </apex:pageBlockTable>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>            
+        </apex:pageBlock>       
+    </apex:form>
+    <script>
+        function checkIndv(cb, clc){
+            
+            var dr = $('.'+clc); 
+    
+            if(dr.length>0){  
+                for(var i=0;i<dr.length;i++)
+                {  
+                    //dr[i].disabled = !cb.checked;                         
+                }
+            }
+        }
+        function checkAll(ele,cb)
+        {
+            var inputElem = document.getElementsByTagName("input");
+            for(var i=0; i<inputElem.length; i++)
+            {
+                if(inputElem[i].id.indexOf(ele+"checkbox")!=-1)
+                inputElem[i].checked = cb.checked;
+                //if(inputElem[i].type == 'text' && inputElem[i].id.indexOf(ele+"amount")!=-1)
+                //inputElem[i].disabled = !cb.checked;
+            }
+            
+        }
+    </script>
+</apex:page>

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Demand Configuration Ratio</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Demand Configuration Ratios</value>
+    </caseValues>
+    <fields>
+        <label><!-- Business Unit --></label>
+        <name>Business_Unit__c</name>
+        <picklistValues>
+            <masterLabel>AMEA</masterLabel>
+            <translation><!-- AMEA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Americas</masterLabel>
+            <translation><!-- Americas --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Australia</masterLabel>
+            <translation><!-- Australia --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Central Europe</masterLabel>
+            <translation><!-- Central Europe --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Nordics</masterLabel>
+            <translation><!-- Nordics --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>South and West Europe</masterLabel>
+            <translation><!-- South and West Europe --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>UK and Ireland</masterLabel>
+            <translation><!-- UK and Ireland --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Deal offshore --></label>
+        <name>Deal_offshore__c</name>
+    </fields>
+    <fields>
+        <label><!-- Deal onsite --></label>
+        <name>Deal_onsite__c</name>
+    </fields>
+    <fields>
+        <label><!-- Demand Key --></label>
+        <name>Demand_Key__c</name>
+    </fields>
+    <fields>
+        <label><!-- Industry --></label>
+        <name>Division__c</name>
+        <picklistValues>
+            <masterLabel>Banking and Finance</masterLabel>
+            <translation><!-- Banking and Finance --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Healthcare</masterLabel>
+            <translation><!-- Healthcare --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>High Tech</masterLabel>
+            <translation><!-- High Tech --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Manufacturing</masterLabel>
+            <translation><!-- Manufacturing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Retail</masterLabel>
+            <translation><!-- Retail --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Email Alerts --></label>
+        <name>Emails__c</name>
+    </fields>
+    <fields>
+        <label><!-- Offshore --></label>
+        <name>OffShore__c</name>
+        <picklistValues>
+            <masterLabel>Advisor</masterLabel>
+            <translation><!-- Advisor --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Manager</masterLabel>
+            <translation><!-- Manager --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Professional</masterLabel>
+            <translation><!-- Professional --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Senior Advisor</masterLabel>
+            <translation><!-- Senior Advisor --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Senior Manager</masterLabel>
+            <translation><!-- Senior Manager --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Senior Professional</masterLabel>
+            <translation><!-- Senior Professional --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- OffshoreAmount --></label>
+        <name>OffshoreAmount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Offshore Hours / Month --></label>
+        <name>Offshore_Deal_Month__c</name>
+    </fields>
+    <fields>
+        <label><!-- Offshore Revenue Ratio --></label>
+        <name>Offshore_Ratio__c</name>
+    </fields>
+    <fields>
+        <label><!-- Offshore Resource Ratio --></label>
+        <name>Offshore_Resource__c</name>
+    </fields>
+    <fields>
+        <label><!-- OnSiteAmount --></label>
+        <name>OnSiteAmount__c</name>
+    </fields>
+    <fields>
+        <label><!-- OnSite --></label>
+        <name>OnSite__c</name>
+        <picklistValues>
+            <masterLabel>Consultant</masterLabel>
+            <translation><!-- Consultant --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Managing Consultant</masterLabel>
+            <translation><!-- Managing Consultant --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Managing Partner</masterLabel>
+            <translation><!-- Managing Partner --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Practice Partner</masterLabel>
+            <translation><!-- Practice Partner --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>President and CEO</masterLabel>
+            <translation><!-- President and CEO --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Principal</masterLabel>
+            <translation><!-- Principal --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Senior Consultant</masterLabel>
+            <translation><!-- Senior Consultant --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Senior Principal</masterLabel>
+            <translation><!-- Senior Principal --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Vice President</masterLabel>
+            <translation><!-- Vice President --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Onsite Hours / Month --></label>
+        <name>Onsite_Deal_Month__c</name>
+    </fields>
+    <fields>
+        <label><!-- Onsite Revenue Ratio --></label>
+        <name>Onsite_Ratio__c</name>
+    </fields>
+    <fields>
+        <label><!-- Onsite Resource Ratio --></label>
+        <name>Onsite_Resource__c</name>
+    </fields>
+    <fields>
+        <label><!-- Rate per Head offshore --></label>
+        <name>Rate_per_Head_offshore__c</name>
+    </fields>
+    <fields>
+        <label><!-- Rate per Head onsite --></label>
+        <name>Rate_per_Head_onsite__c</name>
+    </fields>
+    <fields>
+        <label><!-- Offering --></label>
+        <name>Service_Line__c</name>
+        <picklistValues>
+            <masterLabel>Applications</masterLabel>
+            <translation><!-- Applications --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Big Data</masterLabel>
+            <translation><!-- Big Data --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cloud</masterLabel>
+            <translation><!-- Cloud --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Consulting</masterLabel>
+            <translation><!-- Consulting --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cyber</masterLabel>
+            <translation><!-- Cyber --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Infrastructure</masterLabel>
+            <translation><!-- Infrastructure --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mobility</masterLabel>
+            <translation><!-- Mobility --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Total Deal --></label>
+        <name>Total_Deal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Rate per head --></label>
+        <name>Total_Rate_per_head__c</name>
+    </fields>
+    <layouts>
+        <layout>Demand Configuration Ratio Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Demand Configuration --></label>
+            <section>Demand Configuration</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Sum of onsite and offshore resources must be 100 --></errorMessage>
+        <name>Sum_of_Resource_should_be_100</name>
+    </validationRules>
+</CustomObjectTranslation>

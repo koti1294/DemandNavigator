@@ -1,0 +1,569 @@
+<apex:page controller="LT_Revenue_Backlog_by_Period_or_Quarter" showHeader="true"  sidebar="false"   docType="html-5.0">    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+        <head>
+            <title>Report</title>
+            <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['bar']}]}"></script>  
+    
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS090, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+            
+            <!-- <apex:includeScript value="{!URLFOR($Resource.jqueryLibrary, 'jquery-1.8.1.min.js')}"/> -->
+             <apex:includeScript value="{!URLFOR($Resource.jquery_3_1_1_min)}"/>
+
+                <style>
+                    .tree {
+                        min-height:20px;
+                        //padding:19px;
+                        margin-bottom:20px;
+                        //background-color:#fbfbfb;
+                        //border:1px solid #999;
+                        -webkit-border-radius:4px;
+                        -moz-border-radius:4px;
+                        border-radius:4px;
+                        -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)
+                    }
+                    .tree li {
+                        list-style-type:none;
+                        margin:0;
+                        padding:10px 5px 0 5px;
+                        position:relative
+                    }
+                    .tree li::before, .tree li::after {
+                        content:'';
+                        left:-20px;
+                        position:absolute;
+                        right:auto
+                    }
+                    .tree li::before {
+                        border-left:1px solid #999;
+                        bottom:50px;
+                        height:100%;
+                        top:0;
+                        width:1px
+                    }
+                    .tree li::after {
+                        border-top:1px solid #999;
+                        height:20px;
+                        top:25px;
+                        width:25px
+                    }
+                    .tree li span {
+                        -moz-border-radius:5px;
+                        -webkit-border-radius:5px;
+                        border:1px solid #999;
+                        border-radius:5px;
+                        display:inline-block;
+                        padding:3px 8px;
+                        text-decoration:none
+                    }
+                    .tree li.parent_li>span {
+                        cursor:pointer
+                    }
+                    .tree>ul>li::before, .tree>ul>li::after {
+                        border:0
+                    }
+                    .tree li:last-child::before {
+                        height:30px
+                    }
+                    .tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
+                        background:#eee;
+                        border:1px solid #94a0b4;
+                        color:#000
+                    }
+                </style>
+                
+                
+                
+                <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
+                <script src="{!URLFOR($Resource.jquery_dialog,'jquery-1.9.1.min.js')}"></script>
+                <script src="{!URLFOR($Resource.sorting,'Sorting/sorttable.js')}"></script>
+                
+              
+                
+
+                <style type="text/css">
+                    table {
+                      border-collapse: collapse;
+                    }
+                    th, td {
+                      padding: 5px 10px;
+                      font-family: Montserrat;
+                    }
+                    th {
+                      background-color: #F7F9FB;
+                      border:1px solid #EEF0F3;
+                      
+                    }
+                    th[data-sort]{
+                      cursor:pointer;
+                    }
+                    tr.awesome{
+                      color: red;
+                    }
+                    #backlog td{
+                        background-color: #fff;
+                        border:1px solid #EEF0F3;
+                    }
+                    
+                    .imge{
+                        display:none;
+                    }
+                </style>    
+                
+                <style>
+                    div#expand{
+                    display:block;
+                }
+                </style>
+                <script>
+                   
+                    function show(divId)
+                    {
+                        
+                        var element = document.getElementById(divId);
+                        var classname = element.getAttribute('class');
+                        if(classname.indexOf('slds-is-selected') > -1){
+                            element.setAttribute('class', 'slds-button slds-button--icon-border ' + 'slds-not-selected');
+                            element.setAttribute('title', 'Show filter');
+                            document.getElementById('expand').style.display = 'none';
+                        }
+                        else{
+                            element.setAttribute('class', 'slds-button slds-button--icon-border ' + 'slds-is-selected');
+                            element.setAttribute('title', 'Hide filter'); 
+                            document.getElementById('expand').style.display = 'block';
+                        }
+                    }       
+                    function exportFile()
+                        {                       
+                            var element = document.getElementById('downloadfile');
+                            element.setAttribute('class', 'slds-button slds-button--icon-border slds-is-selected');
+                            exportpdf();
+                        }
+                        
+                    function MonthQuarterFilter(divId,divId2){
+                        var cat = '';
+                        var element1 = document.getElementById(divId+'Button');
+                        var element2 = document.getElementById(divId2+'Button');
+                        var classname = element1.getAttribute('class');
+                        if(classname.indexOf('slds-is-selected') > -1){
+                            element1.setAttribute('class', 'slds-button slds-button--icon-border ' + 'slds-not-selected');
+                            element2.setAttribute('class', 'slds-button slds-button--icon-border ' + 'slds-is-selected');
+                            //DivId
+                            cat = divId2;                            
+                        }
+                        else{
+                            element1.setAttribute('class', 'slds-button slds-button--icon-border ' + 'slds-is-selected');
+                            element2.setAttribute('class', 'slds-button slds-button--icon-border ' + 'slds-not-selected');
+                            //DivId
+                            cat = divId; 
+                        }
+                        $("input[id$=setCategoryId]").val(cat);
+                        MonthFilter();
+                    }
+                </script>
+        </head>    
+
+        <body>
+            <apex:form > 
+            <apex:pageMessages id="messagebx"/>
+            <apex:inputHidden id="setCategoryId" value="{!Category}"/>
+            <apex:actionFunction action="{!Export}" name="exportpdf" />
+            <apex:actionFunction action="{!getPlanningModel}" name="MonthFilter" reRender="chartmonth,messagebx" Status="getDataStatus">
+                <apex:param name="sel_opp" value=""/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!getPlanningModel}" name="MonthFilter2" reRender="datachart,messagebx" Status="getDataStatus">
+                <apex:param name="sel_opp" value=""/>
+            </apex:actionFunction>
+            <apex:actionStatus id="getDataStatus">
+                <apex:facet name="start">
+                    <div style="background:#f8f8f8;width: 150px;z-index:1000;position:fixed;border:2px solid #ccc;left:50%;top:50%;padding:25px">
+                        <img src="/img/loading24.gif" style="vertical-align:middle;"/>
+                        Searching....
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>            
+
+            <!-- REQUIRED SLDS WRAPPER -->
+            <div class="slds">    
+
+                <!-- MASTHEAD -->
+                <!-- / MASTHEAD -->    
+
+                <!-- PAGE HEADER -->
+                <div class="slds-page-header" role="banner">
+
+                    <!-- PAGE HEADER TOP ROW -->
+                    <div class="slds-grid">
+
+                        <!-- PAGE HEADER / ROW 1 / COLUMN 1 -->
+                        <div class="slds-col">
+
+                            <!-- HEADING AREA -->
+                            <!-- MEDIA OBJECT = FIGURE + BODY -->
+                            <div class="slds-media">
+
+                                <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-user">
+                                        <use xlink:href="{!URLFOR($Resource.SLDS090, 'assets/icons/standard-sprite/svg/symbols.svg#report')}"></use>
+                                    </svg>
+                                </div>
+
+                                <div class="slds-media__body">
+                                    <p class="slds-text-heading--label">Report</p>
+                                    <h1 class="slds-text-heading--medium">Revenue Backlog By Period or Quarter</h1>                                 
+                                </div>
+                                
+                                
+
+                            </div>
+                            <!-- / MEDIA OBJECT -->
+                            <!-- HEADING AREA -->
+
+                        </div>
+                        <!-- / PAGE HEADER / ROW 1 / COLUMN 1 -->
+
+                        <!-- PAGE HEADER / ROW 1 / COLUMN 2 -->
+                        <div class="slds-col slds-no-flex slds-align-middle">
+                            <div class="slds-button">
+                               
+                                
+                                <button id="QuarterButton" class="slds-button slds-button--icon-border slds-not-selected" title="Quarter view" name="data" type="button" onclick="MonthQuarterFilter('Quarter','Month')">
+                                    <svg aria-hidden="true" class="slds-button__icon">
+                                      <use xlink:href="{!URLFOR($Resource.SLDS090, 'assets/icons/utility-sprite/svg/symbols.svg#chart')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Quarter View</span>
+                                </button>
+                                <button id="MonthButton" class="slds-button slds-button--icon-border slds-is-selected" name="data" title="Month view" type="button" onclick="MonthQuarterFilter('Month','Quarter')">
+                                    <svg aria-hidden="true" class="slds-button__icon">
+                                      <use xlink:href="{!URLFOR($Resource.SLDS090, 'assets/icons/utility-sprite/svg/symbols.svg#record')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Month View</span>
+                                </button>
+                                <button id="FilterIconDiv" class="slds-button slds-button--icon-border slds-not-selected" name="data" title="Show filter" type="button" onClick="show('FilterIconDiv')">
+                                    <svg aria-hidden="true" class="slds-button__icon">
+                                        <use xlink:href="{!URLFOR($Resource.SLDS090, 'assets/icons/utility-sprite/svg/symbols.svg#filterList')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Filter List</span>
+                                </button>
+                                <button id="downloadfile" class="slds-button slds-button--icon-border slds-not-selected" name="data" type="button" title="Download" onClick="exportFile()">
+                                    <svg aria-hidden="true" class="slds-button__icon">
+                                      <use xlink:href="{!URLFOR($Resource.SLDS090, 'assets/icons/utility-sprite/svg/symbols.svg#download')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Download</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- / PAGE HEADER / ROW 1 / COLUMN 2 -->
+
+                    </div>
+
+                    <br/>
+                    <div class="slds-media">
+
+
+                        <div class="slds-media__body">
+                            <p class="slds-text-heading--label">DESCRIPTION</p>
+                            <p class="slds-text-body--regular slds-truncate">Review the revenue backlog at an account or opportunity level across fiscal periods or quarters for closed planning versions</p>                                   
+                        </div>
+                        
+                        
+
+                    </div>
+                           
+                    
+                    <!-- Filter-->
+                    <div id="expand" style="display:none;border-top:1px solid #D8DDE6">
+                        <div class="slds-grid slds-page-header__detail-row">
+
+                            <!-- PAGE HEADER / ROW 2 / COLUMN 1 -->
+                            <div class="slds-col--padded slds-size--1-of-6">
+                            <div class="slds-form-element">
+                              <label class="slds-form-element__label" for="selectSample1">Planning Year</label>
+                              <div class="slds-form-element__control">
+                                <apex:selectList id="SelectListFromYear" Styleclass="slds-select" value="{!strFromPlanYear}" multiselect="false" size="1" >
+                                    <apex:selectOptions value="{!FromPlanYear}" />
+                                    <apex:actionSupport event="onchange" reRender="SelectListFrom"/>
+                                </apex:selectList>
+                              </div>
+                            </div>
+                               
+                            </div>
+                           
+                            <div class="slds-col--padded slds-size--1-of-6">
+                            
+                                <div class="slds-form-element">
+                              <label class="slds-form-element__label" for="selectSample1">Planning Version</label>
+                              <div class="slds-form-element__control">
+                                <apex:selectList id="SelectListFrom" Styleclass="slds-select" value="{!strFromPlan}" multiselect="false" size="1" >
+                                            <apex:selectOptions value="{!FromPlan}" />
+                                            <apex:actionSupport event="onchange"  action="{!getPlanningModel}"  reRender="chartmonth,messagebx" Status="getDataStatus"/>
+                                        </apex:selectList>
+                              </div>
+                            </div>
+                            
+                            </div>
+                            <div class="slds-col--padded slds-size--1-of-6">
+                                <div class="slds-form-element">
+                                  <label class="slds-form-element__label" for="selectSample1">Service Line</label>
+                                  <div class="slds-form-element__control">
+                                    <apex:inputfield value="{!dummyOpportunity.Service_Line__c}" Styleclass="slds-select">
+                                    <apex:actionSupport event="onchange" action="{!getPlanningModel}" Status="getDataStatus" reRender="messagebx,chartmonth"/>
+                                    </apex:inputfield>
+                                  </div>
+                                </div>                            
+                            </div>
+                            <div class="slds-col--padded slds-size--1-of-6">
+                                <div class="slds-form-element">
+                                  <label class="slds-form-element__label" for="selectSample1">BUSINESS UNIT</label>
+                                  <div class="slds-form-element__control">
+                                    <apex:inputfield value="{!dummyOpportunity.BussinessUnit__c}" Styleclass="slds-select">
+                                    <apex:actionSupport event="onchange" action="{!getPlanningModel}" Status="getDataStatus" reRender="messagebx,chartmonth"/>
+                                    </apex:inputfield>
+                                  </div>
+                                </div>                            
+                            </div>
+                            
+
+                            <div class="slds-col--padded slds-size--1-of-6">
+                                <div class="slds-form-element">
+                                  <label class="slds-form-element__label" for="selectSample1">DIVISION</label>
+                                  <div class="slds-form-element__control">
+                                    <apex:inputfield value="{!dummyOpportunity.Division__c}"  Styleclass="slds-select">
+                                        <apex:actionSupport event="onchange" action="{!getPlanningModel}" Status="getDataStatus" reRender="messagebx,chartmonth"/>
+                                    </apex:inputfield>
+                                  </div>
+                                </div>                            
+                            </div>
+                            
+                             <div class="slds-col--padded slds-size--1-of-6">
+                            <div class="slds-form-element">
+                              <label class="slds-form-element__label" for="selectSample1">OPPORTUNITY STAGE</label>
+                              <div class="slds-form-element__control">
+                                <apex:selectList id="SelectOppStage" value="{!OppStages}" multiselect="true"  Styleclass="slds-select" style="height:150px">
+                                    <apex:selectOptions value="{!OpportunityStages}" />
+                                    <apex:actionSupport event="onchange" action="{!getPlanningModel}"  reRender="AccountRolefilterInput,AccountOwnerfilterInput,AccountfilterInput,chartmonth,messagebx" Status="getDataStatus"/>
+                                </apex:selectList>
+                              </div>
+                            </div>
+                               
+                            </div>
+                            </div>
+                            <div class="slds-grid slds-page-header__detail-row">
+                            
+                            <div class="slds-col--padded slds-size--1-of-3">
+                                
+                                <div class="slds-form-element">
+                              <label class="slds-form-element__label" for="selectSample1">Account</label>
+                              <div class="slds-form-element__control">
+                                <apex:outputPanel id="AccountfilterInput"> 
+                                        <apex:inputText Styleclass="slds-input" value="{!sAccountText}"  html-inputText="Enter your preferred browser" html-autocomplete="on" list="{!lstAccountOption}">
+                                            <apex:actionSupport event="onchange" action="{!getPlanningModel}"  reRender="AccountRolefilterInput,AccountOwnerfilterInput,OpportunityfilterInput,chartmonth,messagebx" Status="getDataStatus"/>
+                                        </apex:inputText>
+                                        </apex:outputPanel>
+                              </div>
+                            </div>
+                                
+                            </div>
+                            <div class="slds-col--padded slds-size--1-of-3">
+                                <div class="slds-form-element">
+                              <label class="slds-form-element__label" for="selectSample1">Account Owner</label>
+                              <div class="slds-form-element__control">
+                              <apex:outputPanel id="AccountOwnerfilterInput"> 
+                                        <apex:inputText Styleclass="slds-input" value="{!strAccOwner}"  html-inputText="Enter your preferred browser" html-autocomplete="on" list="{!setUser}">
+                                            <apex:actionSupport event="onchange" action="{!getPlanningModel}"  reRender="AccountRolefilterInput,AccountfilterInput,OpportunityfilterInput,chartmonth,pgmsg" Status="getDataStatus"/>
+                                        </apex:inputText>
+                                        </apex:outputPanel>
+                                
+                              </div>
+                            </div>
+
+                            </div>
+                            <div class="slds-col--padded slds-size--1-of-3">
+                            <div class="slds-form-element">
+                              <label class="slds-form-element__label" for="selectSample1">Opportunity</label>
+                              <div class="slds-form-element__control">
+                              <apex:outputPanel id="OpportunityfilterInput">
+                                            <apex:inputText Styleclass="slds-input" value="{!sOpportunityText}"  html-inputText="Enter your preferred browser" html-autocomplete="on" list="{!lstOpportunityOption}">
+                                                <apex:actionSupport event="onchange" action="{!getPlanningModel}"  reRender="AccountRolefilterInput,AccountOwnerfilterInput,AccountfilterInput,chartmonth,messagebx" Status="getDataStatus"/>
+                                            </apex:inputText>
+                                        </apex:outputPanel>
+                                
+                              </div>
+                            </div>
+                            </div>
+                            
+                        </div>
+                     </div>
+                    <!--Filter End-->
+                    
+                    <!-- / PAGE HEADER DETAIL ROW -->
+
+
+                </div>
+                <!-- / PAGE HEADER -->
+
+
+                <!-- PRIMARY CONTENT WRAPPER -->
+                <br/>
+                <div class="myapp">
+                    
+                            <apex:outputPanel id="chartmonth">
+                                    <div style="margin-top:10px;margin-bottom:10px">
+                                        <div id="top_x_div"></div>
+                                    </div>
+                                    <script type="text/javascript">                                 
+                                    initCharts();
+                                    function initCharts() {
+                                    var chart_data = new Array(); 
+                                    var chart_label = new Array();                                  
+                                    var data = new google.visualization.DataTable();
+                                    data.addColumn('string', 'Month');
+                                    data.addColumn('number', 'Revenue');
+                      
+                                    var listsize = {!data.size};
+                                    data.addRows(listsize);
+                                    <apex:repeat value="{!data}" var="d">
+                                        chart_data.push('{!d.name}');
+                                        chart_label.push('{!d.data1}');
+                                    </apex:repeat>
+                                    for(var i = 0;i<listsize;i++){
+                                        data.setCell(i, 0, chart_data[i]);
+                                        data.setCell(i, 1, chart_label[i]);
+                                    }
+                                    
+
+                                var options = {
+                                  title: 'Backlog by month',
+                                  width: window.innerWidth,
+                                  legend: { position: 'none' },
+
+                                  chart: { title: '',
+                                           subtitle: '' },
+                                  bars: 'vertical', // Required for Material Bar Charts.
+                                  axes: {
+                                    x: {
+                                      0: { side: 'bottom', label: ''} // Top x-axis.
+                                    }
+                                  },
+                                  bar: { groupWidth: "90%" }
+                                };
+
+                                var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+                                chart.draw(data, options);
+                                }
+                              
+                            </script>
+                            <br/>
+                                <div id="containerrecords">
+                                    <apex:outputpanel >
+                                        <apex:variable var="total" value="{!0}"/>
+                                        <table class="slds-table slds-table--bordered">
+                                            <thead>
+                                                <tr class="slds-text-heading--label">
+                                                    <apex:repeat value="{!lstHeader}" var="h">
+                                                        <th scope="col">
+                                                            <span class="slds-truncate"><b>{!h.label}</b></span>
+                                                        </th>
+                                                    </apex:repeat>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <apex:variable var="accCount" value="{!0}" />
+
+                                                <apex:repeat value="{!lstTParent}"  var="acc">
+                                                <apex:variable var="accCount" value="{!accCount+1}" />
+                                                    <tr class="slds-hint-parent">
+                                                        <td data-label="Account-name" role="row">
+                                                            <span class="slds-truncate">{!accCount}.</span>&nbsp;
+                                                            <b><span class="slds-truncate"><a href="/{!acc.AccId}" target="_blank">{!acc.AccName}</a></span></b>
+                                                        </td>
+                                                    
+                                                       <td data-label="Opportunity-name" style="text-align: center">
+                                                            
+                                                            <span class="slds-truncate"><b>{!Acc.OppCount}</b></span>
+                                                        </td>
+                                                        <td data-label="Rdateopp" style="text-align: center">
+                                                            <span class="slds-truncate">&nbsp;</span>
+                                                        </td>
+                                                        <td data-label="Contractvalue" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            <b>{!userCurrencySign} 
+                                                            <apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                <apex:param value="{!acc.OppTotal}"/>  
+                                                             </apex:outputText></b>
+                                                            </span>
+                                                        </td>
+                                                        <td data-label="ContractTerm" style="text-align: left">
+                                                            <span class="slds-truncate">&nbsp;</span>
+                                                        </td>
+                                                         <td data-label="BacklogAmount" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            <b>{!userCurrencySign} 
+                                                            <apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                <apex:param value="{!acc.bcklgAccTotal}"/>  
+                                                             </apex:outputText></b>
+                                                            </span>
+                                                            
+                                                        </td>
+
+                                                    </tr>
+                                                
+                                                <apex:repeat value="{!acc.lstTableValue}"  var="opp">
+                                                    <tr class="slds-hint-parent" >
+                                                        <td colspan="1">
+                                                            &nbsp;
+                                                            
+                                                        </td>
+                                                    
+                                                        <td data-label="Opportunity-name" style="text-align: left">
+                                                            <b><span class="slds-truncate"><a style="color:{!opp.licolor}" href="/{!opp.OppId}" target="_blank">{!opp.OppName}</a></span></b>
+                                                        </td>
+                                                        <td data-label="Rdateopp" style="text-align: center">
+                                                            <span class="slds-truncate">
+                                                            <apex:outputText value="{0, date, MM/dd/yyyy}">
+                                                            <apex:param value="{!opp.Rdateopp}"/>
+                                                            </apex:outputText></span>
+                                                        </td>
+                                                        <td data-label="Contractvalue" style="text-align: right">
+                                                            <span class="slds-truncate">{!userCurrencySign} 
+                                                            <apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                            <apex:param value="{!opp.Contractvalue}"/>  
+                                                            </apex:outputText> 
+                                                            </span>
+                                                        </td>
+                                                        <td data-label="ContractTerm" style="text-align: center">
+                                                            <span class="slds-truncate"><apex:outputText value="{!opp.ContractTerm}" />  </span>
+                                                        </td>
+                                                        <td data-label="BacklogAmount" style="text-align: right">
+                                                            <span class="slds-truncate">{!userCurrencySign} 
+                                                            <apex:outputText value="{0, number, ###,###,###,##0}">
+                                                                <apex:param value="{!opp.Total}" /> 
+                                                            </apex:outputText>
+                                                            </span>
+                                                        </td>
+
+                                                    </tr>
+                                                </apex:repeat>
+                                                </apex:repeat>
+                       
+                                            </tbody>
+                                        </table>
+                                    </apex:outputpanel>
+                                </div>
+                                </apex:outputpanel>
+                    
+                </div>
+
+            </div>
+            <!-- / REQUIRED SLDS WRAPPER --> 
+
+            </apex:form> 
+            
+        </body>    
+
+        <!-- JAVASCRIPT -->
+        <!-- / JAVASCRIPT -->    
+
+    </html>
+</apex:page>

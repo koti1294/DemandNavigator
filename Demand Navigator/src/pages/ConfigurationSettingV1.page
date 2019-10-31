@@ -1,0 +1,751 @@
+<apex:page controller="configurationSettingControllerV1" sidebar="false">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS090, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+             <apex:includeScript value="{!URLFOR($Resource.jquery_3_1_1_min)}"/>
+            <apex:includeScript value="{! $Resource.iconic}"/>
+            <apex:includeScript value="{!URLFOR($Resource.tabcontent, 'tabcontent.js')}"/>
+            
+            <apex:stylesheet value="{!URLFOR($Resource.Forecastera_Setting, '/confsettingstyle.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.Forecastera_Setting,'/confsettscript.js')}"/> 
+        </head>
+        <body>
+    
+<apex:form id="thsform">        
+                    
+    <apex:inputHidden id="hdnStageInput" value="{!strStages}"/>
+    <apex:inputHidden id="hdnSavedStageInput" value="{!strSavedStages}"/>
+    <apex:inputHidden id="hdnCategoryInput" value="{!strCategories}"/>
+    <apex:inputHidden id="hdnSavedCategoryInput" value="{!strSavedCategories}"/>
+    
+    
+
+    
+    <apex:actionFunction name="addAddiVersion" action="{!addAdditionalPlanningVersion}" status="actionBudgetVersion" oncomplete="location.reload()" />
+    <apex:actionFunction name="addFinancialMeasure" action="{!addFinancialMeasure}" status="actionFinancialMeasure" oncomplete="location.reload()" />
+    <apex:actionFunction name="addPlanning12Version" action="{!addPlanning12Version}" status="actionPlanning12Version" oncomplete="location.reload()" />
+    <apex:actionFunction name="addPlanning15Version" action="{!addPlanning15Version}" status="ationAddPlanning15Version" oncomplete="location.reload()" />
+    <apex:actionFunction name="onBatchClick" action="{!batchRun}" status="actionbatchrunstatus" oncomplete="location.reload()" />
+    
+    
+    <apex:actionFunction name="saveStageAction" action="{!saveOppStage}" status="statusOppStages" rerender="pagemsg" oncomplete="location.reload()"  />
+     <apex:actionFunction name="saveStageAction1" action="{!saveOppStage}" status="statusOppStages" rerender="pagemsg" />
+    
+     <apex:actionFunction name="ResetFiscalYears" action="{!ResetFiscalYears}"/>
+     <apex:actionFunction name="redirectToAddPlan" action="{!redirectToAddPlan}"/>
+    <apex:actionFunction name="redirectToFinancialMeasure" action="{!redirectToFinancialMeasure}"/>
+    
+    
+    <apex:pagemessages id="pagemsg"/>  
+    <div >
+    <ul class="tabs" data-persist="true">
+            
+            <li id="viewli0" class="active"><a href="#viewcon0"><span><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/menu-2x.png')}"/>
+            </span> ForecastEra<sup>TM</sup> Settings</a></li>
+            
+            <li id="viewli1"><a href="#viewcon1"><span><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/calendar-2x.png')}"/>
+            </span>Backlog Fiscal Year</a></li>
+            <li id="viewli2"><a href="#viewcon2"><span><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/list-2x.png')}"/>
+            </span>Opportunity Stages</a></li>
+
+            <li id="viewli4"><a href="#viewcon4"><span><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/graph-2x.png')}"/>
+            </span>Planning Versions</a></li>
+            <li id="viewli5"><a href="#viewcon5"><span><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/list-rich-2x.png')}"/>
+            </span>Planning Measures</a></li>
+            <li id="viewli6"><a href="#viewcon6"><span><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/spreadsheet-2x.png')}"/>
+            </span>Notifications</a></li>
+            <div class="clearfix"></div>
+        </ul>
+        
+     
+        <div class="slds">
+        
+        <div class="slds-tabs--default__content slds-show" role="tabpanel" id="viewcon0">
+
+                <p>&nbsp;</p>
+                       
+            
+            <strong><h4>ForecastEra<sup>TM</sup> Settings</h4></strong>
+            <br/>
+            <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                  <span class="slds-assistive-text">Info</span>                  
+                  <h2>
+                    <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                      <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                    </svg>
+                    <strong>Forecastera setting overview</strong>
+                    <p>
+                        <p>Thank you for choosing <strong>ForecastEra<sup>TM</sup></strong> for your Enterprise Business Planning needs.</p>
+                        <apex:outputPanel rendered="{!IF(isCustomFiscalYearEnable,true,false)}"><p>Custom Fiscal Setting is enable in your organization.
+                        <Input  type="button" onClick="onBatchClick()" value="Run Default Settings" Class="btn-success setTab"></Input>
+                        </p>    </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(isCustomFiscalYearEnable,false,true)}"><p>Custom Fiscal Setting is not enable in your organization.
+                        <Input  type="button" onClick="onBatchClick()" value="Run Default Settings" Class="btn-success setTab"></Input>
+                        </p>    </apex:outputPanel>
+                        <apex:actionstatus id="actionbatchrunstatus" startText="waiting..." stopText=""/>
+                    </p>
+                  </h2>
+                </div>          
+
+                
+                <p>&nbsp;</p>       
+                <script>
+                           $( document ).ready(function() {
+                               setforecast_M_Warning();
+                           });
+                               
+                           function setforecast_M_Warning(){
+                                                                document.getElementById('forecast_M_Warning').innerHTML = '{!JSENCODE(forecast_M_Warning)}';
+                                                  }
+
+                </script>                        
+                        <div id="forecast_M_Warning"> </div>
+                <div class="panel panel-default"> 
+                    <p>&nbsp;</p>
+                    <div class="slds-card">
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">
+                                        <strong>Manual Steps</strong>
+                                    </h2>
+
+                                    
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                                    <h2>                                        
+                                        <p>
+                                            In order to complete the installation of the ForecastEra<sup>TM</sup> app, your System Administrator needs to complete any outstanding items based on the following list:
+                                        </p>
+                                    </h2>
+                            </div>
+                            <script>
+                                                   $( document ).ready(function() {
+                                                       setforecast_M_BacklogFiscaYear();
+setforecast_M_OpportunityStages()
+                                                   });
+                                                       
+                                                   function setforecast_M_BacklogFiscaYear(){
+document.getElementById('forecast_M_BacklogFiscaYear').innerHTML = '{!JSENCODE(forecast_M_BacklogFiscaYear)}';
+}
+function setforecast_M_OpportunityStages(){
+document.getElementById('forecast_M_OpportunityStages').innerHTML = '{!JSENCODE(forecast_M_OpportunityStages)}';
+}
+                        
+                                        </script>   
+                            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                                <thead>
+                                    <tr class="slds-text-heading--label">
+                                        <th scope="col" title="Setting">
+                                            <div class="slds-truncate">Setting</div>
+                                        </th>
+                                        <th scope="col" title="Status">
+                                            <div class="slds-truncate">Status</div>
+                                        </th>
+                                        <th scope="col" title="message"></th>
+                                    </tr>
+                                </thead>
+      
+                                <tbody>
+                                    <tr>
+                                        <td data-label="Seeting">
+                                            <div class="slds-truncate">1. Backlog Fiscal Year</div>
+                                        </td>
+                                        <td data-label="Seeting">
+                                            <Input  type="button" onClick="onButtonClick(1,'{!JSENCODE(HTMLENCODE(forecast_BacklogFiscaYear))}')" value="{!JSENCODE(HTMLENCODE(forecast_BacklogFiscaYear))}" Class="{!IF(forecast_BacklogFiscaYear != 'Action Required','btn-success setTab','btn-success redTab')} "></Input>
+                                        </td>
+                                        <td data-label="message">
+                                            <div id="forecast_M_BacklogFiscaYear"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label="Seeting">
+                                            <div class="slds-truncate">2. Opportunity Stages</div>
+                                        </td>
+                                        <td data-label="Seeting">                                           
+                                            <Input  type="button" onClick="onButtonClick(2,'{!JSENCODE(HTMLENCODE(forecast_OpportunityStages))}')" value="{!JSENCODE(HTMLENCODE(forecast_OpportunityStages))}" Class="{!IF(forecast_OpportunityStages != 'Action Required','btn-success setTab','btn-success redTab')} "></Input>                           
+                                        </td>                                       
+                                        <td data-label="message"><div id="forecast_M_OpportunityStages"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="slds-card">
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">
+                                        <strong>Steps Completed during Installation</strong>
+                                    </h2>
+
+                                    
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                                    <h2>                                        
+                                        <p>
+                                             We have created some default settings and options based on your company profile and set up.Here are the steps that we have completed during the installation.
+                                        </p>
+                                    </h2>
+                            </div>
+                            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                                <thead>
+                                    <tr class="slds-text-heading--label">
+                                        <th scope="col" title="Setting">
+                                            <div class="slds-truncate">Setting</div>
+                                        </th>
+                                        <th scope="col" title="Status">
+                                            <div class="slds-truncate">Status</div>
+                                        </th>
+                                        <th scope="col" title="message"></th>
+                                    </tr>
+                                </thead>
+      
+                                <tbody>
+                                    <tr>
+                                        <td data-label="Seeting">
+                                            <div class="slds-truncate">A. Planning Fiscal Periods</div>
+                                        </td>
+                                        <td data-label="Seeting">
+                                            <Input  type="button" onClick="onButtonClick(5,'{!JSENCODE(HTMLENCODE(forecast_PlanningFiscalPeriods))}')" value="{!JSENCODE(HTMLENCODE(forecast_PlanningFiscalPeriods))}" Class="{!IF(forecast_PlanningFiscalPeriods != 'Action Required','btn-success setTab','btn-success redTab')} "></Input>
+                                        <apex:actionstatus id="actionPlanning12Version" startText="waiting..." stopText=""/>
+                                        </td>
+                                        <td data-label="message">
+                                            <script>
+                                            $( document ).ready(function() {
+                                                setforecast_M_PlanningFiscalPeriods();
+                                                                                                setforecast_M_PlanningVersions();
+                                                                                                setforecast_M_BudgetVersions();
+                                                                                                setforecast_M_PlanningMeasures();
+                                            });
+                                                
+                                                function setforecast_M_PlanningFiscalPeriods(){
+                                                                                                document.getElementById('forecast_M_PlanningFiscalPeriods').innerHTML = '{!JSENCODE(HTMLENCODE(forecast_M_PlanningFiscalPeriods))}';
+                                                                                                }
+                                                                                                
+                                                                                                function setforecast_M_PlanningVersions(){
+                                                                                                document.getElementById('forecast_M_PlanningVersions').innerHTML = '{!JSENCODE(HTMLENCODE(forecast_M_PlanningVersions))}';
+                                                                                                }
+                                                                                                function setforecast_M_BudgetVersions(){
+                                                                                                document.getElementById('forecast_M_BudgetVersions').innerHTML = '{!JSENCODE(HTMLENCODE(forecast_M_BudgetVersions))}';
+                                                                                                }
+                                                                                                function setforecast_M_PlanningMeasures(){
+                                                                                                document.getElementById('forecast_M_PlanningMeasures').innerHTML = '{!JSENCODE(HTMLENCODE(forecast_M_PlanningMeasures))}';
+                                                                                                }
+                                            </script>
+                                            <label class="slds-form-element__label"><div id="forecast_M_PlanningFiscalPeriods"/></label>
+                                        </td>
+                                    </tr>
+                                    <tr>                                
+                                        <td data-label="Seeting">
+                                            <div class="slds-truncate">B. Planning Versions</div>
+                                        </td>
+                                        <td data-label="Seeting">                                           
+                                            <Input  type="button" onClick="onButtonClick(6,'{!JSENCODE(HTMLENCODE(forecast_PlanningVersions))}')" value="{!JSENCODE(HTMLENCODE(forecast_PlanningVersions))}" Class="{!IF(forecast_PlanningVersions != 'Action Required','btn-success setTab','btn-success redTab')} "></Input>
+                                        <apex:actionstatus id="ationAddPlanning15Version" startText="waiting..." stopText=""/>                      
+                                        </td>                                       
+                                        <td data-label="message"><label class="slds-form-element__label"><div id="forecast_M_PlanningVersions"></div></label></td>
+                                    </tr>
+                                    <tr>                                
+                                        <td data-label="Seeting">
+                                            <div class="slds-truncate">C. Budget Versions</div>
+                                        </td>
+                                        <td data-label="Seeting">                                           
+                                            <Input  type="button" onClick="onButtonClick(4,'{!JSENCODE(HTMLENCODE(forecast_BudgetVersions))}')" value="{!JSENCODE(HTMLENCODE(forecast_BudgetVersions))}" Class="{!IF(forecast_BudgetVersions != 'Action Required','btn-success setTab','btn-success redTab')} "></Input>
+                                         <apex:actionstatus id="actionBudgetVersion" startText="waiting..." stopText=""/>                           
+                                        </td>                                       
+                                        <td data-label="message"><label class="slds-form-element__label"><div id="forecast_M_BudgetVersions"></div></label></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td data-label="Seeting">
+                                            <div class="slds-truncate">D. Planning Measures</div>
+                                        </td>
+                                        <td data-label="Seeting">                                           
+                                            <Input  type="button"  onClick="onButtonClick(7,'{!JSENCODE(HTMLENCODE(forecast_PlanningMeasures))}')" value="{!JSENCODE(HTMLENCODE(forecast_PlanningMeasures))}"  Class="{!IF(forecast_PlanningMeasures != 'Action Required','btn-success setTab','btn-success redTab')} "></Input>
+                                        <apex:actionstatus id="actionFinancialMeasure" startText="waiting..." stopText=""/>                         
+                                        </td>                                       
+                                        <td data-label="message">  <label class="slds-form-element__label"><div id="forecast_M_PlanningMeasures"/></label></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                 <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">
+                                    <strong>Installation Settings Script</strong>
+                                </h2>
+
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="slds-card__body">
+                        <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                            <span class="slds-assistive-text">Warning</span>
+                            <h2>  
+                                <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                                </svg>                                    
+                                <strong>Warning</strong>
+                                <p>
+                                    Re-running the installation script will delete and recreate the default settings. If you have already started using the ForecastEra<sup>TM</sup> App, this can lead to data integrity issues.                                 
+                                </p>
+                            </h2>
+                            <button type="button" Class="btn-danger redTab">Rerun Installation Settings Script</button>
+                        </div>
+                    </div>
+                </div>
+                         
+        
+                        
+        
+            </div>
+        </div>
+        
+        <div class="slds-tabs--default__content slds-show" role="tabpanel" id="viewcon1">
+            <p>&nbsp;</p>
+            <strong><h4>Backlog Fiscal Year</h4></strong>
+            <br/>
+            <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                <span class="slds-assistive-text">Info</span>                  
+                <h2>
+                <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                </svg>
+                <strong>Overview</strong>
+                <p>
+                The Revenue Backlog is calculated at the end of every period starting with the Fiscal Year configured as the Backlog Fiscal Year. In order
+                for the calculation to be effective, it is required that Revenue and related adjustments are entered at an Opportunity level starting in the
+                Backlog Fiscal Year.
+                </p>
+                <p>&nbsp;</p>
+                <p>All Revenue and related information prior to the beginning of the Backlog Fiscal Year will be captured as a lump sum within the 
+                <span class="label label-info">Actuals to Date</span> field at the Opportunity level.
+                </p>
+                </h2>
+            </div>
+            <p>&nbsp;</p> 
+            <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                <span class="slds-assistive-text">Warning</span>
+                <h2>  
+                    <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                    <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                    </svg>                                    
+                    <strong>Warning</strong>
+                    <p>
+                    Once configured, <strong>do not</strong> change this setting. Updating the Fiscal Year will result in inaccurate backlog calculation.
+                    </p>
+                </h2>
+            </div>
+
+            <div class="slds-card__body">
+                <strong><h3>Company Profile</h3></strong>
+                <br/>
+                <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                    <tbody>
+                        <tr>
+                            <td data-label="Planning Year label" >              
+                                <label class="slds-form-element__label" >Backlog Fiscal Year</label>
+                            </td>
+                            <td data-label="Planning Year">
+                                <apex:selectList id="backlogFiscalYear" value="{!FiscalYear}" multiselect="false" size="1" Styleclass="slds-select" >
+                                    <apex:selectOptions value="{!FYears}" />
+                                </apex:selectList>
+                            
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">                
+                                <apex:commandbutton value="Reset" action="{!ResetFiscalYears}" rerender="backlogFiscalYear,pagemsg" styleClass="restTab"/>
+                                <apex:commandbutton value="Set Backlog Fiscal Year" status="statusbacklogbtn"  action="{!saveconfigurationSetting}" styleClass="gbutton setTab" rerender="backlogFiscalYear,pagemsg" oncomplete="JSENCODE(HTMLENCODE(location.reload()))"/>
+                                <apex:actionStatus id="statusbacklogbtn" StartText="Waiting....." StopText=""/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+           
+<div class="slds-tabs--default__content slds-show" role="tabpanel" id="viewcon2">
+<p>&nbsp;</p>
+<strong><h4>Opportunity Stages</h4></strong>
+<br/>
+<div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+<span class="slds-assistive-text">Info</span>                  
+<h2>
+<svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+<use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+</svg>
+<strong>Opportunity stages overview</strong>
+<p>Revenue Backlog is related to Opportunities that considered to be "Won" by the organization. Based on the Sales Methodology and Processes, select the corresponding Opportunity Stages to include in calculating Revenue Backlog.</p>
+</h2>
+</div>
+<p>&nbsp;</p> 
+<div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+<span class="slds-assistive-text">Warning</span>
+<h2>  
+<svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+<use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+</svg>                                    
+<strong>Warning</strong>
+<p>
+Adding or removing Stages may adversely impact the Revenue Backlog Reporting and Analysis as it may include/exclude certain opportunities based on the modified set of Opportunity Stages.
+</p>
+</h2>
+</div>
+
+<div class="slds-card__body">
+    <div class="slds-grid slds-grid--pull-padded">
+        <div class="slds-col--padded">
+            <div class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">
+                                <strong>ForeCast Category</strong>
+                            </h2>
+
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="slds-card__body" style="padding:10%">
+                    
+                        <input type="button" onClick="onCategorySelect(this)" class="bbutton stage" value="All" style="color:white;margin-bottom:1px;"/>
+                        <div id="mchk_cc-All" style="display:none" class="chkBox">
+                            <apex:image id="theImage_cc" value="{!HTMLENCODE($Resource.checksign)}" width="20" height="20"/>
+                        </div>
+                        <div class="clearfix"></div>
+                        <apex:repeat value="{!lstCategory}" var="s">
+                            <div style="margin-bottom:1px;"> 
+                                <input type="button" value="{!HTMLENCODE(s.CategoryName)}" onClick="onCategorySelect(this,'{!HTMLENCODE(s.StageName)}')" class="bbutton stage" style="color:white;"></input>
+                                <div id="mchk_cc-{!s.CategoryName}" style="display:none" class="chkBox">
+                                    <apex:image id="theImage" value="{!HTMLENCODE($Resource.checksign)}" width="20" height="20"/>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </apex:repeat>
+                    
+                </div>
+            </div>
+
+
+        </div>
+        <div class="slds-col--padded">
+        
+            <div class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">
+                                <strong>Opportunity Stages (Default)</strong>
+                            </h2>
+
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="slds-card__body" style="padding:10%">
+                    
+                        <input type="button" onClick="onStageSelect(this)" class="bbutton stage" value="All" style="color:white;margin-bottom:1px;"/>
+                        
+                        <div id="mchk-All" style="display:none" class="chkBox">
+                            <apex:image id="theImage" value="{!HTMLENCODE($Resource.checksign)}" width="20" height="20"/>
+                        </div>
+                        <div class="clearfix"></div>
+                        
+                        <apex:repeat value="{!lstStage}" var="s">
+                           <div style="margin-bottom:1px;"> 
+                           <input type="button" value="{!HTMLENCODE(s.StageName)}" onClick="onStageSelect(this)" class="bbutton stage" style="color:white;"></input >
+            
+                            <div id="mchk-{!s.StageName}" style="display:none" class="chkBox">
+                                 <apex:image id="theImage" value="{!HTMLENCODE($Resource.checksign)}" width="20" height="20"/>
+                            </div>
+                            <div class="clearfix"></div>
+                            </div>
+                        </apex:repeat>
+                    
+                </div>
+            </div>
+            
+            
+        </div>
+        
+    </div>
+    <div style="text-align:center">
+            <input type="button" class="restTab"  value="Reset" onClick="setDefaultStages()"/>
+            <input type="button" class="gbutton setTab"  value="Set Opportunity Stages" onClick="onStageSave()"/>
+        </div>
+</div>
+</div>
+       <div class="slds-tabs--default__content slds-show" role="tabpanel" id="viewcon4">
+
+                <p>&nbsp;</p>
+                       
+            
+                <strong><h4>Planning Versions</h4></strong>
+                <br/>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                      <span class="slds-assistive-text">Info</span>                  
+                      <h2>
+                        <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                          <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                        </svg>
+                        <strong>Planning version overview</strong>
+                        <p>Planning Versions are automatically created by default based on the Fiscal Year and Period definitions from the company profile settings.
+                        </p>
+                        <p>You are able to automatically <strong>Additional Planning Versions</strong> for each new Fiscal Year that is defined.</p>
+                      </h2>
+                    </div>          
+
+                    
+                    <p>&nbsp;</p> 
+                    
+                                    
+                        <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                            <span class="slds-assistive-text">Warning</span>
+                            <h2>  
+                                <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                                </svg>                                    
+                                <strong>Attention</strong>
+                                <p>To manually add Planning Versions, use the <strong>Manage Planning Versions</strong> section under <strong>Data Management</strong> tab.</p>
+                            </h2>
+                        </div>
+                    <div class="slds-card__body">
+        
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                <thead>
+                    <tr class="slds-text-heading--label">
+    
+                        <th scope="col" title="planning measue">
+                            <div class="slds-truncate">Additional planning version</div>
+                        </th>
+
+                        
+                    </tr>
+                </thead>
+
+                <tbody>
+                <apex:repeat value="{!lstAddPlanVersion}" var="ap">
+                    <tr><td data-label="mname">{!HTMLENCODE(ap.Name)}</td></tr>
+                    </apex:repeat>
+                    <tr>
+                        <td colspan ="1"><center><input type="button" class="gbutton setTab"  value="Edit Additional Planning Versions" onClick="window.open('/apex/DataManagementPageV1');"/></center></td>
+                    </tr>
+                </tbody>
+            </table>
+
+    </div>
+                </div>
+
+            
+            <div class="slds-tabs--default__content slds-show" role="tabpanel" id="viewcon5">
+
+                <p>&nbsp;</p>
+                       
+            
+                <strong><h4>Planning Measures</h4></strong>
+                <br/>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                      <span class="slds-assistive-text">Info</span>                  
+                      <h2>
+                        <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                          <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                        </svg>
+                        <strong>Planning measure overview</strong>
+                        <p>A Planning measure represents a metric that can be planned for in each Planning Version.</p>
+                        <p>
+                            This metric can be categorized for calculation, reporting and analysis purposes. By default, the following categories have been defined:
+                        </p>
+                        <ul>
+                            <apex:repeat value="{!lstFinancePickMeasure}" var="fmp">
+                            <li>{!HTMLENCODE(fmp)}</li>
+                            </apex:repeat>                                
+                        </ul>               
+                        <p>
+                            You can also define a corresponding General Ledger Account for each Planning Measure to help with data integration with your Planning system and Business Intelligence reporting.
+                        </p>
+                      </h2>
+                    </div>          
+
+                    
+                    <p>&nbsp;</p> 
+                    
+                                    
+                        <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                            <span class="slds-assistive-text">Warning</span>
+                            <h2>  
+                                <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                                </svg>                                    
+                                <strong>Attention</strong>
+                                <p>
+                                    Planning Measures need to be defined before they can be used for Planning activities.                               
+                                </p>
+                            </h2>
+                        </div>
+                    <div class="slds-card__body">
+        
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                <thead>
+                    <tr class="slds-text-heading--label">
+    
+                        <th scope="col" title="planning measue">
+                            <div class="slds-truncate">Planning Measure</div>
+                        </th>
+                        <th scope="col" title="measure description">
+                            <div class="slds-truncate">Measure Description</div>
+                        </th>
+                        <th scope="col" title="measure type">
+                            <div class="slds-truncate">Measure Type</div>
+                        </th>
+                        <th scope="col" title="general ledger account">
+                            <div class="slds-truncate">General Ledger Account</div>
+                        </th>
+                        
+                    </tr>
+                </thead>
+
+                <tbody>
+                <apex:repeat value="{!lstFinancialMeasure}" var="fm">
+                    <tr>
+                    
+                                              
+                                                    <td data-label="mname">{!HTMLENCODE(fm.Name)}</td>
+                                                    <td data-label="mdescription">{!HTMLENCODE(fm.Measure_Description__c)}</td>
+                                                    <td data-label="mtype"> {!HTMLENCODE(fm.Measure_Type__c)}</td>
+                                                    <td data-label="maccount">{!HTMLENCODE(fm.General_Ledger_Account__c)}</td>
+                                                                                                       
+                                               
+                    </tr>
+                    </apex:repeat>
+                    <tr>
+                        <td colspan ="4"><center><input type="button" class="gbutton setTab"  value="Edit Planning Measures" onClick="window.open('{!HTMLENCODE(financelistview)}');"/></center></td>
+                    </tr>
+                </tbody>
+            </table>
+
+    </div>
+                </div>
+
+            
+               
+            
+            <div class="slds-tabs--default__content slds-show" role="tabpanel" id="viewcon6">
+
+                <p>&nbsp;</p>
+                       
+            
+                <strong><h4>Notification</h4></strong>
+                <br/>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                      <span class="slds-assistive-text">Info</span>                  
+                      <h2>
+                        <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                          <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                        </svg>
+                        <strong>Notification overview</strong>
+                        <p>
+                            This section provides the Administrator of ForecastEra<sup>TM</sup> a comprehensive list of items that needs attention to ensure proper functioning of the application on an ongoing basis beyond the initial Configuration.
+                        </p>
+                      </h2>
+                    </div>          
+
+                    
+                    <p>&nbsp;</p> 
+                    <apex:pagemessages id="oppstatusmessage"/>
+                    <apex:outputPanel rendered="{!isMissed}">                    
+                        <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                            <span class="slds-assistive-text">Warning</span>
+                            <h2>  
+                                <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                                </svg>                                    
+                                <strong>Warning</strong>
+                                <p>
+                                    You currently have certain notification items to address.                               
+                                </p>
+                            </h2>
+                        </div>
+                    </apex:outputPanel>
+        <div class="slds-card">
+    <div class="slds-card__header slds-grid">
+        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+            <div class="slds-media__body">
+                <h2 class="slds-text-heading--small slds-truncate">
+                    <strong>Messages</strong>
+                </h2>
+
+                
+            </div>
+        </div>
+        
+    </div>
+    <div class="slds-card__body">
+        <apex:outputPanel id="oppstatuslist" rendered="{!isMissed}">
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                <thead>
+                    <tr class="slds-text-heading--label">
+                        <th scope="col" title="Notification">
+                            <div class="slds-truncate">Notification</div>
+                        </th>
+                        <th scope="col" title="Action">
+                            <div class="slds-truncate">Action</div>
+                        </th>
+                        
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td data-label="Seeting">You currently have opportunities with Revenue streams beyond your existing Fiscal Year settings.
+                        </td>
+                        <td data-label="Seeting">
+                            <apex:outputPanel rendered="{!isCustomFiscalYearEnable}">
+                                <input type="button" class="gbutton setTab"  value="Manage Fiscal Years" onClick="window.open('{!JSENCODE(InstanceURL)}/_ui/core/fiscalyear/FiscalYearSetup/d?retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DCompanyProfile&setupid=ForecastFiscalYear');"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isCustomFiscalYearEnable}">
+                                <input type="button" class="gbutton setTab"  value="Manage Fiscal Years" onClick="generateNewFiscal()"/>    
+                                <apex:actionstatus id="actionGNFY" startText="waiting..." stopText=""/>
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </tbody> 
+            </table>
+            <apex:actionFunction action="{!SaveNewFiscalYears}" name="generateNewFiscal" status="actionGNFY" oncomplete="location.reload()"/>
+        </apex:outputPanel>
+    </div>
+</div>
+              
+            </div>
+            
+            
+            
+        </div>
+    </div>
+</apex:form>
+</body>
+</html>
+</apex:page>

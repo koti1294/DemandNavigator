@@ -1,0 +1,359 @@
+<apex:page controller="LT_Planning_Measure_by_Period3" contentType="application/vnd.ms-excel#Planningmeasurebyperiodorquarter.xls"   cache="true">
+
+<!---->
+<html>
+    <head>
+    <!-- <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'/> -->
+    <apex:stylesheet value="{!URLFOR($Resource.Forecastera_Support, '/Montserrat_family.css')}" />
+    <style>
+        div{
+           font-family: Montserrat;           
+        }
+    </style>    
+    </head>
+    <body>
+   
+    <div class="MontFont">
+    <apex:form >
+        <apex:pageMessages id="messagebx"/>
+        <apex:inputHidden id="setCategoryId" value="{!Category}"/>
+        
+        <apex:actionFunction action="{!getPlanningModel}" name="MonthFilter" reRender="chartmonth,messagebx" Status="getDataStatus">
+            <apex:param name="sel_opp" value=""/>
+        </apex:actionFunction>
+        <apex:actionFunction action="{!getPlanningModel}" name="MonthFilter2" reRender="datachart,messagebx" Status="getDataStatus">
+            <apex:param name="sel_opp" value=""/>
+        </apex:actionFunction>
+
+       
+        <div style="">     
+            <div style="background-color:#F7F9FB;border:1px solid #EEF0F3;">
+                <table style="width:100%">                        
+                    <tr>                                
+                        <td colspan="4">
+                            <font style="color: #969799;    font-size: 10px;  ">REPORT</font><br/>
+                            <font style="font-size: 20px;  font-normal: bold;  color: #26385F;">Planning measure by Period or Quarter</font>
+                            <br/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top">                                    
+                            <font style="color: #969799;    font-size: 10px;  "> DESCRIPTION</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">Review the Planning Measure at an Account or Opportunity Level across Fiscal Periods or Quarters for Closed Planning Versions</font>
+                        </td>
+
+                        <td style="vertical-align:top">                                    
+                            <font style="color: #969799;    font-size: 10px;  "> VIEWING AS</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!$User.FirstName} {!$User.LastName}</font>
+                        </td>
+                        <td style="vertical-align:top">                                   
+                            <font style="color: #969799;    font-size: 10px;  "> LAST REFRESH</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">
+                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!LastLoginDate}" /> 
+                                </apex:outputText>
+                            </font>
+                        </td>
+                       
+                    </tr>
+                </table>
+
+            </div>
+        
+            <br/>
+            
+            <div id="expand">
+                <div style="background-color:#F7F9FB;border:1px solid #EEF0F3;padding:10px">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;    font-size: 10px;  "> PLANNING YEAR</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!strFromPlanYear}</font>
+                            </td>
+                            <td  style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;font-size: 10px;  "> PLANNING VERSION</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!strE_FromPlan}</font> 
+                            </td>
+                            <td  style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;font-size: 10px;  "> PLANNING MEASURE</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">
+                                    <apex:repeat value="{!lstWrapperMeasure}" var="m">
+                                        <apex:outputpanel rendered="{!m.isChecked}">
+                                      <label class="slds-checkbox" for="{!m.MeasureId}">                                                        
+                                        <span class="slds-form-element__label">{!m.Measure}({!m.Type}) </span>
+                                      </label>
+                                      <br/>
+                                      </apex:outputpanel>
+                                                                          
+                                    </apex:repeat>
+                                </font> 
+                            </td>
+                          
+                        </tr>                           
+                    </table>
+                </div>
+            </div>
+            <br/>
+            <div>
+                <table style="border:1px solid #000000;" >
+                    <tr style="background-color:#D1EAF1">
+                        
+                            <td style="font-size:10px;text-align:left;border-bottom:1px solid #D2D2D2">Peiords/Quarter</td>
+                            <td style="font-size:10px;text-align:left;border-bottom:1px solid #D2D2D2">Measure Total</td>
+                       
+                    </tr>
+                    <apex:repeat value="{!data}" var="h">
+                            <tr >
+                                
+                                    <td style="text-align:left;font-size:10px;border-bottom:1px solid #D2D2D2">{!h.name}</td>
+                                    <td style="text-align:left;font-size:10px;border-bottom:1px solid #D2D2D2">{!h.data1}</td>
+                               
+                            </tr>
+                       </apex:repeat> 
+                 </table>                
+            </div>
+            <br/>
+            <apex:outputPanel id="chartmonth" >
+        
+            <div id="containerrecords">
+                <apex:outputpanel >
+                    <apex:variable var="total" value="{!0}"/>
+                    <table style="border:1px solid #000000"  width="100%" >
+                        <thead >
+                            <tr >
+                                <apex:repeat value="{!lstHeaderExport}" var="h">
+                                    <th style="font-size:10px;border-bottom:1px solid #000000;text-align:left">{!h.label}</th>
+                                </apex:repeat>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <apex:repeat value="{!lstTOwnerRole}"  var="r">
+                                                    <!--<apex:variable var="RoleCount" value="{!RoleCount+1}" />-->
+                                                    <tr class="slds-hint-parent" style="background-color:">
+                                                        <td data-label="Role-Name" role="row" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                            <!--<span class="slds-truncate">{!RoleCount}.</span> -->
+                                                            <b><span class="slds-truncate">{!r.RoleName}</span></b>
+                                                        </td>
+                                                        <td colspan="4" style="border-bottom:1px solid #D2D2D2">
+                                                                     
+                                                                </td>
+                                                                <td data-label="Acc-ContactValue" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                    <span class="slds-truncate">
+                                                                    {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                        <apex:param value="{!r.OppTotal}"/>  
+                                                                     </apex:outputText> 
+                                                                    </span>
+                                                                </td>
+                                                                <td colspan="1" style="border-bottom:1px solid #D2D2D2">
+                                                                     
+                                                                </td>
+                                                                <td data-label="Acc-MeasureValue" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                    <span class="slds-truncate">
+                                                                    {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                        <apex:param value="{!r.MeasureTotal}"/>  
+                                                                     </apex:outputText> 
+                                                                    </span>
+                                                                </td>
+                                                        <apex:repeat value="{!r.lstYears}" var="fy">
+                                                            <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left;border-bottom:1px solid #D2D2D2">
+                                                               
+                                                            <b> 
+                                                              {!userCurrencySign}  <apex:outputText value="{0, number, ###,###,###,###}">  
+                                                                    <apex:param value="{!fy.value}"/>  
+                                                                </apex:outputText>
+                                                            </b>
+                                                            </td>
+                                                        </apex:repeat>
+                                                    </tr>
+                                                    <!--<apex:variable var="OwnerCount" value="{!0}" />-->
+                                                    <apex:repeat value="{!r.lstTableValue}"  var="o">
+                                                        <!--<apex:variable var="OwnerCount" value="{!OwnerCount+1}" />-->
+                                                        <tr class="slds-hint-parent">
+                                                            <td colspan="1" style="border-bottom:1px solid #D2D2D2">
+                                                                 
+                                                            </td>                                                           
+                                                            <td data-label="Owner-Name" role="row" style="font-size: 10px;  font-normal: bold; border-bottom:1px solid #D2D2D2">
+                                                                <!--<span class="slds-truncate">{!OwnerCount}.</span> -->
+                                                                <b><span class="slds-truncate">{!o.OwnerName}</span></b>
+                                                            </td>
+                                                            <td colspan="3" style="border-bottom:1px solid #D2D2D2">
+                                                                     
+                                                                </td>
+                                                                <td data-label="ow-ContactValue" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                    <span class="slds-truncate">
+                                                                    {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                        <apex:param value="{!o.OppTotal}"/>  
+                                                                     </apex:outputText> 
+                                                                    </span>
+                                                                </td>
+                                                                <td colspan="1" style="border-bottom:1px solid #D2D2D2">
+                                                                     
+                                                                </td>
+                                                                <td data-label="ow-MeasureValue" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                    <span class="slds-truncate">
+                                                                    {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                        <apex:param value="{!o.MeasureTotal}"/>  
+                                                                     </apex:outputText> 
+                                                                    </span>
+                                                                </td>
+                                                            <apex:repeat value="{!o.lstYears}" var="fy">
+                                                                <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left;border-bottom:1px solid #D2D2D2">
+                                                                   
+                                                                <b> 
+                                                                    {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,###}">  
+                                                                        <apex:param value="{!fy.value}"/>  
+                                                                    </apex:outputText>
+                                                                </b>
+                                                                </td>
+                                                            </apex:repeat>
+                                                        </tr>
+                                                        <!--<apex:variable var="AccountCount" value="{!0}" />-->
+                                                        <apex:repeat value="{!o.lstTableValue}"  var="a">
+                                                            <!--<apex:variable var="AccountCount" value="{!AccountCount+1}" />-->
+                                                            <tr class="slds-hint-parent">
+                                                                <td colspan="2" style="border-bottom:1px solid #D2D2D2">
+                                                                     
+                                                                </td>                                                           
+                                                                <td data-label="Account-Name" role="row" style="font-size: 10px;  font-normal: bold;  border-bottom:1px solid #D2D2D2">
+                                                                    <!--<span class="slds-truncate">{!AccountCount}.</span> -->
+                                                                    <b><span class="slds-truncate">{!a.AccountName}</span></b>
+                                                                </td>
+                                                                <td colspan="2" style="border-bottom:1px solid #D2D2D2">
+                                                                     
+                                                                </td>
+                                                                <td data-label="Acc-ContactValue" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                    <span class="slds-truncate">
+                                                                    {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                        <apex:param value="{!a.OppTotal}"/>  
+                                                                     </apex:outputText> 
+                                                                    </span>
+                                                                </td>
+                                                                <td colspan="1" style="border-bottom:1px solid #D2D2D2">
+                                                                     
+                                                                </td>
+                                                                <td data-label="Acc-MeasureValue" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                    <span class="slds-truncate">
+                                                                    {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                        <apex:param value="{!a.MeasureTotal}"/>  
+                                                                     </apex:outputText> 
+                                                                    </span>
+                                                                </td>
+                                                                <apex:repeat value="{!a.lstYears}" var="fy">
+                                                                <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left;border-bottom:1px solid #D2D2D2">
+                                                                   
+                                                                <b> 
+                                                                   {!userCurrencySign} <apex:outputText value="{0, number, ###,###,###,###}">  
+                                                                        <apex:param value="{!fy.value}"/>  
+                                                                    </apex:outputText>
+                                                                </b>
+                                                                </td>
+                                                            </apex:repeat>
+                                                            </tr>
+                                                            <!--<apex:variable var="OppCount" value="{!0}" />-->
+                                                            <apex:repeat value="{!a.lstTableValue}"  var="opp">
+                                                                <!--<apex:variable var="OppCount" value="{!OppCount+1}" />-->
+                                                                <tr class="slds-hint-parent">
+                                                                    <td colspan="3" style="border-bottom:1px solid #D2D2D2">
+                                                                         
+                                                                    </td>                                                           
+                                                                    <td data-label="Opportunity-name" style="font-size: 10px;  font-normal: bold; border-bottom:1px solid #D2D2D2">
+                                                                        <b><span class="slds-truncate" style="color:{!opp.licolor}" >{!opp.OpportunityName}</span></b>
+                                                                    </td>
+                                                                    <td data-label="Rdateopp" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                        <span class="slds-truncate">
+                                                                        <apex:outputText value="{0, date, MM/dd/yyyy}">
+                                                                        <apex:param value="{!opp.Rdateopp}"/>
+                                                                        </apex:outputText></span>
+                                                                    </td>
+                                                                    <td data-label="Contractvalue" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                        <span class="slds-truncate">
+                                                                        {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                            <apex:param value="{!opp.Contractvalue}"/>  
+                                                                         </apex:outputText> 
+                                                                        </span>
+                                                                    </td>
+                                                                    <td data-label="ContractTerm" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                        <span class="slds-truncate"><apex:outputText value="{!opp.ContractTerm}" />  </span>
+                                                                    </td>
+                                                                    <td data-label="BLtotal" style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                        <span class="slds-truncate">
+                                                                        {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                            <apex:param value="{!opp.Total}"/>  
+                                                                         </apex:outputText>
+                                                                        </span>
+                                                                    </td>
+                                                                    <apex:repeat value="{!opp.lstYears}" var="fy">
+                                                                        <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;border-bottom:1px solid #D2D2D2">
+                                                                           
+                                                                        <b> 
+                                                                            {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,###}">  
+                                                                                <apex:param value="{!fy.value}"/>  
+                                                                            </apex:outputText>
+                                                                        </b>
+                                                                        </td>
+                                                                    </apex:repeat>
+
+                                                                </tr>
+                                                            </apex:repeat>
+                                                        </apex:repeat>
+                                                    </apex:repeat>
+                                                </apex:repeat>
+                                                <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);}" onmouseover="if (window.hiOn){hiOn(this);}" class="dataRow even odd first">
+                                
+                                                    <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left">
+                                                        <apex:outputText value="{!totalval.AccountName}"/>
+                                                    </td>
+                                                    <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left">
+                                                        
+                                                    </td>
+                                                    <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left">
+                                                        
+                                                    </td>
+                                                    
+                                                    <td colspan="1" style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left">                                    
+                                                        <apex:outputText value="{!totalval.OpportunityName}"/>
+                                                    </td>
+                                                    
+                                                    <td colspan="1" style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left">
+                                                        <apex:outputText value="{0, date, MM/dd/yyyy}">
+                                                        <apex:param value="{!totalval.Rdateopp}"/>
+                                                        </apex:outputText>
+                                                    </td>
+                                                    
+                                                    <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left">                                  
+                                                        {!userCurrencySign}<apex:outputText value="{!totalval.Contractvalue}" />                                    
+                                                    </td>
+                                                    <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left">                                  
+                                                        <apex:outputText value="{!totalval.ContractTerm}" />                                     
+                                                    </td>
+                                                    <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left">                                  
+                                                        <b> {!userCurrencySign}
+                                                            <apex:outputText value="{0, number, ###,###,###,###}">  
+                                                                <apex:param value="{!totalval.total}"/>  
+                                                            </apex:outputText>
+                                                        </b>                                    
+                                                    </td>
+                                                    <apex:repeat value="{!totalval.lstYears}" var="fy">
+                                                        <td colspan="1"  style="font-size: 10px;  font-normal: bold;  color: #26385F;text-align:left">
+                                                           
+                                                        <b> 
+                                                            {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,###}">  
+                                                                <apex:param value="{!fy.value}"/>  
+                                                            </apex:outputText>
+                                                        </b>
+                                                        </td>
+                                                    </apex:repeat>
+                                    
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </apex:outputpanel>
+            </div>
+            </apex:outputpanel>
+        </div>
+    </apex:form>
+    </div>
+    </body>
+    </html>
+</apex:page>

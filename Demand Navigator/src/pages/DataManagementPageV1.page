@@ -1,0 +1,793 @@
+<apex:page Controller="NewPlanningVersionExtensionv4" id="thepage" extensions="ManageFiscalPlanningStatusv4,CopyPlanningVersionv1,OppBacklogv5" sidebar="false">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+        <head>
+            <title>Data Management</title>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS090, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+   <apex:includeScript value="{!URLFOR($Resource.FSettingJS)}"/>
+    
+    <apex:includeScript value="{!URLFOR($Resource.jquery_3_1_1_min)}"/>
+    <apex:includeScript value="{!URLFOR($Resource.tabcontent, 'tabcontent.js')}"/>
+    
+    
+    
+    <apex:stylesheet value="{!URLFOR($Resource.Forecastera_Support, '/forecast_style.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.Forecastera_Support,'/forecast_dmscript.js')}"/>     
+
+    
+    
+    </head>
+    <body>
+<apex:form id="theform" >
+            <apex:actionFunction name="AF_setProcessContent" action="{!setProcessContent}" reRender="LoadingStatus" status="etoyearstatus">
+                <apex:param name="p_from" value=""/>
+                <apex:param name="p_to" value=""/>                              
+            </apex:actionFunction>
+            
+            
+            <apex:inputHidden id="hdnStageInput" value="{!strStages}"/>
+            <apex:inputHidden id="hdnSavedStageInput" value="{!strSavedStages}"/>
+            <apex:inputHidden id="hdnPlanningStageInput" value="{!strPlanningStages}"/>
+    
+           
+
+<div >
+        <ul class="tabs" data-persist="true">
+            
+             <li class="active"><a href="#view1"><span class="glyphicon"><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/account-login-2x.png')}"/>
+            </span> Manage Planning Versions</a></li>
+            
+            <li><a href="#view2"><span class="glyphicon"><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/action-redo-2x.png')}"/>
+            </span> Copy Planning Versions</a></li>
+            
+            <li><a href="#view3"><span class="glyphicon"><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/x-2x.png')}"/>
+            </span> Clear Planning Versions</a></li>
+            
+            <li><a href="#view4"><span class="glyphicon"><apex:image alt="eye" title="eye"
+               url="{!URLFOR($Resource.iconic, 'open-iconic-master/png/bar-chart-2x.png')}"/>
+            </span> Generate Revenue Backlog</a></li>
+            <div class="clearfix"></div>
+            
+        </ul>
+
+        <div class="slds">
+            <div id="view1" class="slds-tabs--default__content slds-show" role="tabpanel">
+            <p>&nbsp;</p>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                  <span class="slds-assistive-text">Info</span>                  
+                  <h2>
+                 
+                    <strong>Planning Versions</strong>
+                    <p>
+                        Planning Versions contain planning data associated with Financial Measures across Fiscal Periods/Years at an Opportunity Level. 
+                            As part of the process, each Planning Version will be opened for data entry and closed at the end of the planning activities.
+                            Additional Planning Versions can also be created based on planning needs.
+                    </p>
+                  </h2>
+                </div>
+                <br/>
+                <Input  id="ManageStatus" type="button" onClick="expendDiv(this)" value="Manage Status" Class="slds-button slds-button--brand slds-button--small"></Input>
+                <Input  id="NewPlanningVersion" type="button" onClick="expendDiv(this)" value="New Planning Version" Class="slds-button slds-button--brand slds-button--small"></Input>
+
+                
+                <p>&nbsp;</p>
+            
+                
+                <div  id="manageDiv-ManageStatus">
+                
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">
+                                    <strong>Manage Planning Version Status</strong>
+                                </h2>
+
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="slds-card__body">
+                        <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                          <span class="slds-assistive-text">Info</span>                  
+                          <h2>
+                            <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                              <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                            </svg>
+                            <strong>Process Overview</strong>
+                            <p>
+                                <ul>
+                                    <li>Planning Versions have the status of <strong>Not Open</strong> by default.</li>
+                                    <li>It is best practice to only have <strong>1</strong> Planning Version Open during the planning cycle.</li>
+                                    <li>A data entry Start Date and End Date should be specified as part of the process - only 
+                                    during the timeframe specified will users be able to enter data via the Planning Workbench.</li>                                        
+                                </ul>
+                            </p>
+                          </h2>
+                        </div>
+
+                        <p>&nbsp;</p>
+                        <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                            <span class="slds-assistive-text">Warning</span>
+                            <h2>  
+                                <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                                </svg>                                    
+                                <strong>Warning</strong>
+                                <p>
+                                    It is not advisable to have more than 1 Planning Version in the Open status as it may lead to data being changed after the planning cycle.                                  
+                                </p>
+                            </h2>
+                        </div>
+                        <br/>
+                        <p>
+                        <apex:pageBlock id="manageplanningblock" title="Planning Version Setting" >
+            
+                            <apex:pagemessages id="msgwarnings"/>
+                            <apex:pageBlockButtons location="bottom" >
+                                <apex:commandButton value="Save" action="{!save}" styleClass="gbutton setTab" reRender="manageplanningblock" onComplete="expendDivOnLoad()"/>
+                                <apex:commandButton value="Cancel" styleClass="restTab"/>
+                            </apex:pageBlockButtons>
+                            <apex:repeat id="pageblockrepeatid" value="{!FYL}" var="fs">
+                                <apex:pageBlockSection title="Fiscal Year : {!fs.YearId} ({!fs.StartDate} To {!fs.EndDate})"  columns="1" collapsible="true">
+                                    <apex:pageblockTable value="{!fs.lstMonth}" var="m" style="width:100%">
+                                        <apex:column headerValue="Type" styleclass="{!IF(m.is_Editable == true ,'bg-info','')}" >  
+                                            
+                                            <label class="slds-form-element__label">{!m.Type}</label>
+                                        </apex:column>
+                                        <apex:column headerValue="Planning Version Name" styleclass="{!IF(m.is_Editable == true ,'bg-info','')}" >  
+                                            <label class="slds-form-element__label">{!m.period.Name}</label>
+                                        </apex:column>
+                                        
+                                        <apex:column headerValue="Status" styleclass="{!IF(m.is_Editable == true ,'bg-info','')}">
+                                            
+                                            <apex:panelGrid columns="2" style="width:100%">
+                                                    
+                                                    <apex:inputfield id="PeriodStatusId"  value="{!m.Period.Version_Status__c}" Styleclass="slds-select" >
+                                                        
+                                                            <apex:actionSupport action="{!onChangeStatus}" status="periodStatus" onsubmit="confirmStatus({!isAdmin},'{!m.is_Editable}','{!m.MonthId}' , '{!m.YearId}','{!m.OLDStatus}',this,'{!m.period.Is_this_a_Budget_Planning_Version__c}','{!m.period.Is_this_a_Gap_Planning_Version__c}')" event="onchange" reRender="manageplanningblock" >
+                                                           
+                                                                    <apex:param value="{!m.MonthId}" assignTo="{!SelectedMonth}" name="firstparam"/>
+                                                                    <apex:param value="{!m.YearId}" assignTo="{!SelectedYear}" name="secondparam"/>
+                                                            </apex:actionSupport>
+                                                    </apex:inputfield>
+                                                    <apex:actionStatus id="periodStatus" onstart="$('#divWaitingImage').center();">
+                                                        <apex:facet name="start">
+                                                                <span id="fy{!m.YearId}" style="display:none;"> {!m.Period.Version_Status__c}::{!m.period.Is_this_a_Budget_Planning_Version__c}::{!m.period.Is_this_a_Gap_Planning_Version__c}
+                                                                </span>
+                                                                <div id="divWaitingImage" style="z-index:200;">
+                                                                    <center>
+                                                                        <table>
+                                                                            <tr>
+                                                                                <td align="center">
+                                                                                    <img src="/img/loading24.gif" style="vertical-align:middle;"/> 
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </center>
+                                                                </div>                    
+                                                        </apex:facet>                                                          
+                                                    </apex:actionStatus>
+                                            </apex:panelGrid>
+                                        </apex:column>
+                                        <apex:column headerValue="Start Date" id="Columnmonthopendate" styleclass="{!IF(m.is_Editable == true ,'bg-info','')}">
+                                            
+                                             <c:preventdefaultdate ><apex:inputField id="monthopendate" value="{!m.Period.Data_Entry_Start_Date__c}" styleclass="slds-input" style="width: 75%;"/>
+                                                <script>
+                                                var isValidOD = '{!JSENCODE(IF(m.is_Disable,"true", "false"))}';
+                                                if(isValidOD == 'true') {
+                                                    document.getElementById('{!$Component.monthopendate}').disabled = true;
+                                                } else if(isValidOD == 'false') {
+                                                    document.getElementById('{!$Component.monthopendate}').disabled = false;
+                                                }
+                                                 </script>
+                                            </c:preventdefaultdate>
+                                        </apex:column>
+                                        <apex:column headerValue="End Date" id="Columnmonthclosedate" styleclass="{!IF(m.is_Editable == true ,'bg-info','')}">
+                                            
+                                            <c:preventdefaultdate ><apex:inputField id="monthclosedate" value="{!m.Period.Data_Entry_Closed_Date__c}" styleclass="slds-input" style="width: 75%;">
+                                                <apex:actionSupport action="{!onChangeEndDate}" event="onchange" reRender="manageplanningblock">
+                                                    <apex:param value="{!m.MonthId}" assignTo="{!SelectedMonth}" name="firstparam"/>
+                                                    <apex:param value="{!m.YearId}" assignTo="{!SelectedYear}" name="secondparam"/>
+                                                </apex:actionSupport>
+                                            </apex:inputField>
+                                            
+                                            <script>
+                                                var isValidCD = '{!JSENCODE(IF(m.is_Disable,"true", "false"))}';
+                                                if(isValidCD == 'true') {
+                                                    document.getElementById('{!$Component.monthclosedate}').disabled = true;
+                                                } else if(isValidCD == 'false') {
+                                                    document.getElementById('{!$Component.monthclosedate}').disabled = false;
+                                                }
+                                            </script>
+                                            
+                                            </c:preventdefaultdate>
+                                        </apex:column>
+                                        
+                                        
+                                    </apex:pageblockTable>
+                                </apex:pageBlockSection>
+                                
+                            </apex:repeat>
+                        </apex:pageBlock>
+                        </p>
+                    </div>
+                </div>
+                            
+                
+      
+                </div>
+                <div  id="manageDiv-NewPlanningVersion">
+                    <p>&nbsp;</p>
+                    <div class="slds-card">
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">
+                                        <strong>Create new Planning Version</strong>
+                                    </h2>
+
+                                    
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                                <span class="slds-assistive-text">Info</span>                  
+                                    <h2>
+                                        <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                                        </svg>
+                                        <strong>Process Overview</strong>
+                                        <p>
+                                            <ul>
+                                                <li>12 Planning Versions are automatically by default created based on the Fiscal Year periods defined.</li>
+                                                <li>3 Budget Planning Versions are also created by default for each Fiscal Year.</li>
+                                                <li>You are able to create more Planning Versions both for Budgeting and Forecasting purposes.</li>
+                                            </ul>
+                                        </p>
+                                    </h2>
+                            </div>
+                            <p>
+                                <div >
+                                    <apex:pageBlock title="Planning Version Edit" mode="edit"  >
+                                        <apex:pageBlockButtons location="bottom" >
+                                            
+                                            <apex:commandButton value="Save" action="{!saveConfiguration}" reRender="newplanning,manageplanningblock"  onComplete="expendDivOnLoad()" styleClass="gbutton setTab"/>
+                                            <apex:commandButton value="Cancel" action="{!CancelConfiguration}" styleClass="restTab" reRender="newplanning"/>
+                                          
+                                        </apex:pageBlockButtons>
+                                        <apex:actionStatus id="onFYearstatus2" startText="Waiting........" ></apex:actionStatus>
+                                        <apex:actionStatus id="onFYearstatus" startText="Waiting........" ></apex:actionStatus>
+                                        <apex:pageBlockSection title="Information" columns="1" id="newplanning">
+                                        
+                                            <apex:pageBlockSectionItem >
+                                                <label class="slds-form-element__label" >Planning version type</label>
+                                                <apex:selectList value="{!strVersion}" multiselect="false" size="1" Styleclass="slds-select" style="width:70%">
+                                                    <apex:selectOptions value="{!PVType}" />
+                                                    <apex:actionsupport event="onchange" action="{!setFiscalDates}"  status="onFYearstatus2" rerender="fperiodblock,fStartDate,fEndDate,fseqno" />
+                                                </apex:selectList>
+                                            </apex:pageBlockSectionItem>
+                                            
+                                            <apex:pageBlockSectionItem >
+                                                <label class="slds-form-element__label" >Planning Version Name</label>
+                                                <apex:inputField value="{!NewPlanVer.MonthName__c}" styleClass="slds-input" style="width:70%" />
+                                            </apex:pageBlockSectionItem>
+                                            
+                                            <apex:pageBlockSectionItem >
+                                                <label class="slds-form-element__label" >Choose Fiscal Year</label>
+                                                <apex:selectList value="{!FiscalYear}" multiselect="false" size="1" Styleclass="slds-select" style="width:70%">
+                                                    <apex:selectOptions value="{!FYears}" />
+                                                    <apex:actionsupport event="onchange" action="{!setFiscalDates}"  status="onFYearstatus" rerender="fperiodblock,fStartDate,fEndDate,fseqno" />
+                                                </apex:selectList>                                                      
+                                            </apex:pageBlockSectionItem>
+                                            
+                                            <apex:pageBlockSectionItem >
+                                                <label class="slds-form-element__label" >Choose Fiscal Period</label>
+                                                <apex:outputPanel id="fperiodblock" >
+                                                    <apex:selectList id="fperiod" value="{!FiscalPeriod}" multiselect="false" size="1" Styleclass="slds-select" style="width:70%">
+                                                        <apex:selectOptions value="{!FPeriods}" />
+                                                        <apex:actionsupport event="onchange" action="{!setFiscalDates}"  status="onFYearstatus" rerender="fStartDate,fEndDate,fseqno" />
+                                                    </apex:selectList>
+                                                    <script>document.getElementById('{!$Component.fperiod}').disabled = {!IF(strVersion != 'Revenue',true,false)}; </script>
+                                                </apex:outputPanel>
+                                            </apex:pageBlockSectionItem>
+                                            
+                                            <apex:pageBlockSectionItem >
+                                                <label class="slds-form-element__label" >Version Status</label>
+                                                <apex:selectList value="{!FiscalStatus}" multiselect="false" size="1" Styleclass="slds-select" style="width:70%">
+                                                    <apex:selectOptions value="{!FStatus}" />
+                                                </apex:selectList>
+                                            </apex:pageBlockSectionItem>
+                                            
+                                            <apex:pageBlockSectionItem >
+                                                <label class="slds-form-element__label" >Data Entry Start Date</label>
+                                                <apex:inputField id="fStartDate"  value="{!NewPlanVer.Data_Entry_Start_Date__c}" styleclass="slds-input" style="width:70%"/>
+                                                        
+                                            </apex:pageBlockSectionItem>
+                                            
+                                            <apex:pageBlockSectionItem >
+                                                <label class="slds-form-element__label" >Data Entry Closed Date</label>
+                                                <apex:inputField id="fEndDate"  value="{!NewPlanVer.Data_Entry_Closed_Date__c}" styleclass="slds-input" style="width:70%"/>                             
+                                            </apex:pageBlockSectionItem>
+                                            
+                                            <apex:pageBlockSectionItem >
+                                                <label class="slds-form-element__label" >Sequence Number</label>
+                                                <apex:inputField id="fseqno" value="{!NewPlanVer.SequenceNo__c}" styleclass="slds-input" style="width:70%"/>
+                                            </apex:pageBlockSectionItem>
+                                            
+                                            <apex:pageBlockSectionItem >
+                                                <label class="slds-form-element__label" >Planning Version Description</label>
+                                                <apex:inputField value="{!NewPlanVer.Planning_Version_Description__c}" styleClass="slds-input" />
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                    </apex:pageblock>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                          
+                </div>
+            
+            </div>
+            
+            <div id="view2" class="slds-tabs--default__content slds-show" role="tabpanel">
+                <apex:actionStatus id="LoadingStatus" onstart="$('#divWaitingImage').center();">
+                    <apex:facet name="start">
+                        <div style="width:100%; height:100%; filter:alpha(opacity=50); opacity:0.5; position:fixed; _position:absolute; z-index:100; display:block; top:0; left:0; background:#000000; border:1px solid #cecece;">
+                        </div>
+                            <div id="divWaitingImage" style="filter:alpha(opacity=50); opacity:1;  z-index:200; display:block; position: absolute;    top: 50%;    left: 50%;    margin-top: -100px;    margin-left: -140px;">
+                                <center>
+                                    <table border="0" cellpadding="6">
+                                        <tr>
+                                            <td align="center">
+                                        
+                                                <div class="panel panel-default">
+                                                    <div class="panel-body" >
+                                                        <div class="col-sm-12" style="z-index:300;">
+                                                            <h4><span class="label label-default">PROGRESS</span></h4>
+                                                            <p>&nbsp;</p>
+                                                            <p class="body">Copying Planning Version from <strong> {!p_f} </strong> to <strong> {!p_t}</strong></p>
+                                                            <div class="progress">
+                                                              <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                                                Copying......
+                                                              </div>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                    </div>
+                                                </div>  
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </center>
+                            </div>
+                                                                
+                    </apex:facet>
+                    <apex:facet name="stop">
+                        
+                    </apex:facet>
+                </apex:actionStatus>
+                <p>&nbsp;</p>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                  <span class="slds-assistive-text">Info</span>                  
+                  <h2>
+                   
+                    <strong>Copy Planning Versions</strong>
+                  </h2>
+                </div>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                    <span class="slds-assistive-text">Info</span>                  
+                        <h2>
+                            <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                            </svg>
+                            <strong>Process Overview</strong>
+                            <p>
+                                <ul>
+                                    <li>This program will allow you to copy an existing data set (such as the Previous Month Actuals) into a Planning Version that is current to your process.</li>
+                                    <li>Planning Versions do not contain data by default.</li>
+                                    <li>When starting the planning process, it is best practice to start with an existing data set and adjust accordingly.</li>
+                                    <li>You can only copy data from <strong>Closed</strong> Planning Versions only.</li>
+                                    
+                                </ul>
+                            </p>
+                        </h2>
+                </div>
+                <p>&nbsp;</p>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                    <span class="slds-assistive-text">Warning</span>
+                    <h2>  
+                        <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                            <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                        </svg>                                    
+                        <strong>Warning</strong>
+                        <p>
+                            This process will override any existing data within the Target Planning Version.                                  
+                        </p>
+                    </h2>
+                </div>
+                <br/>
+                <apex:pagemessages id="copyPlanningMessages"/>
+                
+                <div class="slds-grid slds-grid--pull-padded">
+                  <div class="slds-col--padded">
+                  Copy From
+                  <br/>
+                  <apex:actionStatus id="fromyearstatus" startText="Waiting...." StopText=""/>
+                  <apex:actionStatus id="efromyearstatus" startText="Waiting...." StopText=""/>
+                  <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                    <tbody>
+                        <tr>
+                            <td data-label="Planning Year label" >              
+                                <label class="slds-form-element__label" >Planning Year</label>
+                            </td>
+                            <td data-label="Planning Year">
+                                <apex:selectList id="SelectListFromYear" value="{!strFromPlanYear}" multiselect="false" size="1" Styleclass="slds-select" >
+                                    <apex:selectOptions value="{!FromPlanYear}" />
+                                    <apex:actionSupport event="onchange" reRender="SelectListFromsl" status="fromyearstatus"/>
+                                </apex:selectList>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Planning version label" >               
+                                <label class="slds-form-element__label" >Planning Version</label>
+                            </td>
+                            <td data-label="Planning version">  
+                                         
+                                <apex:actionRegion >
+                                    <apex:actionfunction name="ActionCopyFromMethod" action="{!setEnablePlanning}" reRender="copyPlanningMessages,hdnPlanningStageInput,refRightsign" status="efromyearstatus">
+                                        <apex:param name="P_strFromPlan" value=""/>
+                                    </apex:actionfunction>
+                                    <apex:selectList id="SelectListFromsl" value="{!strFromPlan}" onchange="CopyFromMethod('{!strFromPlan}')" multiselect="false" size="1" Styleclass="slds-select">
+                                        <apex:selectOptions value="{!FromPlan}" />                      
+                                    </apex:selectList> 
+                                </apex:actionRegion>                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Planning Measure label" >               
+                                <label class="slds-form-element__label" >Planning Measures</label>
+                            </td>
+                            <td data-label="Planning Measure">
+                                <input type="button" id="mchkbtn-All" onClick="onStageSelect(this)" class="bbutton stage" value="All"/>                            
+                            
+                                <div id="mchk-All" style="display:none" class="chkBox">
+                                    <apex:image id="theImage" value="{!$Resource.checksign}" width="20" height="20"/>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="chkBtn">
+                                <apex:repeat id="measurelist" value="{!lstMeasure}" var="s">
+                                   <div> 
+                                        <input id="mchkbtn-{!s.Measure.Name}" type="button" value="{!s.Measure.Name}" onClick="onStageSelect(this)" class="bbutton stage" style="background-color:green" ></input>
+                                    
+                                        <div id="mchk-{!s.Measure.Name}" style="display:none" class="chkBox">
+                                             <apex:image id="theImage" value="{!$Resource.checksign}" width="20" height="20"/>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </apex:repeat>
+                                
+                                <apex:outputPanel id="refRightsign">
+                                    <script>
+                                        var stages = $("input[id$=hdnStageInput]").val();
+                                        var n=stages.split(",");
+                                        document.getElementById('mchk-All').style.display = 'none';
+                                        document.getElementById("mchkbtn-All").setAttribute("disabled","disabled");
+                                        
+                                        
+                                        document.getElementById('mchkbtn-All').style.backgroundColor = "";       
+                                        document.getElementById('mchkbtn-All').style.border = "1px solid #ccc";     
+                                        document.getElementById('mchkbtn-All').style.color = "#000000";
+                                        
+                                        for (var index=0; index < n.length; index++){
+                                            if(n[index] != '' && n[index] != null){
+                                                document.getElementById('mchk-'+n[index]).style.display = 'none';
+                                                document.getElementById('mchkbtn-'+n[index]).setAttribute("disabled","disabled");
+                                                
+                                                document.getElementById('mchkbtn-'+n[index]).style.backgroundColor = "";        
+                                                document.getElementById('mchkbtn-'+n[index]).style.border = "1px solid #ccc";       
+                                                document.getElementById('mchkbtn-'+n[index]).style.color = "#000000";
+                                            }
+                                        }
+                                        
+                                        var planningstages = $("input[id$=hdnPlanningStageInput]").val();   
+                                        var n=planningstages.split(",");
+                                        
+                                        var count = 0;
+                                        for (var index=0; index < n.length; index++){
+                                            if(n[index] != '' && n[index] != null){
+                                                document.getElementById('mchkbtn-'+n[index]).removeAttribute("disabled");                                            
+                                                document.getElementById('mchkbtn-'+n[index]).style.backgroundColor = "#337ab7";     
+                                                document.getElementById('mchkbtn-'+n[index]).style.border = "1px solid #2e6da4";        
+                                                document.getElementById('mchkbtn-'+n[index]).style.color = "#ffffff";
+                                                count++;
+                                            }
+                                        }
+                                        if(count > 0){
+                                            document.getElementById('mchkbtn-All').removeAttribute("disabled");                                    
+                                            document.getElementById('mchkbtn-All').style.backgroundColor = "#337ab7";       
+                                            document.getElementById('mchkbtn-All').style.border = "1px solid #2e6da4";      
+                                            document.getElementById('mchkbtn-All').style.color = "#ffffff";     
+                                        }
+                
+                
+                                    </script>
+                                </apex:outputPanel>
+                                
+                                                          
+                            </div>
+                            </td>
+                            <td data-label="Action3"></td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+
+                    
+                     
+                  </div>
+                  <div class="slds-col--padded">
+                  Copy To
+                  <br/>
+                  <apex:actionStatus id="toyearstatus" startText="Waiting...." StopText=""/>
+                  <apex:actionStatus id="etoyearstatus" startText="Waiting...." StopText=""/>
+                  <apex:actionStatus id="plancopystatus" StartText="Refreshing...." StopText="" />
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                        <tbody>
+                            <tr>
+                                <td data-label="To Planning Year label" >               
+                                    <label class="slds-form-element__label">Planning Year</label>
+                                </td>
+                                <td data-label="To Planning Version">
+                                    <apex:actionregion >
+                                    <apex:selectList id="SelectListToYear" value="{!strToPlanYear}" multiselect="false" size="1" Styleclass="slds-select">
+                                            <apex:selectOptions value="{!ToPlanYear}" />
+                                       <apex:actionSupport event="onchange" reRender="SelectListTo" status="toyearstatus"/>
+                                    </apex:selectList>
+                                    </apex:actionregion>
+                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="To Planning Version label" >                
+                                    <label class="slds-form-element__label">Planning Version</label>
+                                </td>
+                                <td data-label="To Planning Version">
+                                    <apex:selectList id="SelectListTo" value="{!strToPlan}" onchange="js_setProcessContent()" multiselect="false" size="1" Styleclass="slds-select">
+                                        <apex:selectOptions value="{!ToPlan}" />
+                                    </apex:selectList>
+                                    
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td colspan="2">
+                                    <input type="button" value="Reset" onClick="onResetCopying()" Class="restTab"/>                                
+                                    <apex:actionFunction name="resetCopyPlanningAction" action="{!resetCopyPlanning}" status="plancopystatus" reRender="copyPlanningMessages,SelectListTo,SelectListFrom,measurelist" />
+                                    
+                                    <input type="button" value="Copy Planning Version" onClick="onPlanningCopying()" Class="gbutton setTab"/>                                
+                                    <apex:actionregion >
+                                    <apex:actionFunction name="PlanningCopyingAction" action="{!CopyPlanningVersion}" status="LoadingStatus" reRender="copyPlanningMessages">
+                                        <apex:param value="" name="P_strFromPlan"/>
+                                        <apex:param value="" name="P_strToPlan"/>                                    
+                                        <apex:param value="" name="P_strSavedStages"/>                                  
+                                    </apex:actionFunction>
+                                    </apex:actionregion>
+                                </td>
+                            </tr>
+                            
+                            
+                            
+                        </tbody>
+                    </table>
+                
+                    
+                  </div>
+                </div>
+        
+    </div>
+    
+    
+    <div id="view3" class="slds-tabs--default__content slds-show" role="tabpanel"><br/>
+<div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                  <span class="slds-assistive-text">Info</span>                  
+                  <h2>
+                   
+                    <strong>Clear Planning Versions</strong>
+                  </h2>
+                </div>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                    <span class="slds-assistive-text">Info</span>                  
+                        <h2>
+                            <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                            </svg>
+                            <strong>Process Overview</strong>
+                            <p>
+                                <ul>
+                    <li>This program will allow you to delete all data within a Planning Version.</li>
+                    <li>You can only delete data from <strong>Closed</strong> Planning Versions.</li>
+                </ul>
+                            </p>
+                        </h2>
+                </div>
+                <p>&nbsp;</p>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                    <span class="slds-assistive-text">Warning</span>
+                    <h2>  
+                        <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                            <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                        </svg>                                    
+                        <strong>Warning</strong>
+                        <p>
+                            This process is not <strong>reversable</strong>. All data from the selected Planning Version will be purged from the system.                                 
+                        </p>
+                    </h2>
+                </div>
+                <br/>           
+            
+            <apex:pagemessages id="msgclearwarnings"/>
+            <apex:actionStatus id="fromclearyearstatus" startText="Waiting...." StopText=""/>
+            <apex:actionStatus id="fromclearversionstatus" startText="Waiting...." StopText=""/>
+            <form class="form-horizontal">
+             <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                    <tbody>
+                        <tr>
+                            <td data-label="Planning Year label" >              
+                                <label class="slds-form-element__label" >Planning Year</label>
+                            </td>
+                            <td data-label="Planning Year">
+                                <apex:selectList id="SelectListFromClearYear" value="{!strFromClearPlanYear}" multiselect="false" size="1" Styleclass="slds-select">
+                                    <apex:selectOptions value="{!FromClearPlanYear}" />
+                                    <apex:actionSupport event="onchange" reRender="refbool,msgclearwarnings,SelectListFromClearPeriod" status="fromclearyearstatus"/>
+                                </apex:selectList>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Planning period label" >                
+                                <label class="slds-form-element__label" >Planning Period</label>
+                            </td>
+                            <td data-label="Planning Period">   
+                                <apex:actionRegion >
+                                    
+                                    <apex:outputPanel id="SelectListFromClearPeriod">
+                                    <select size="1" class="slds-select" id="orgList" onChange="jQuery('[id$=hiddenField]').val(document.getElementById(this.id).value);verifyDeleteAllModelJS();">
+                                        <apex:repeat value="{!FromClearPlan}" var="cp">
+                                            <option value="{!cp.value}">{!cp.label}</option>
+                                        </apex:repeat>
+                                    </select>
+                                    </apex:outputPanel>
+                                    <apex:inputHidden value="{!strFromClearPlan}" id="hiddenField"/>
+                                    <apex:actionFunction action="{!verifyDeleteAllModel}" name="verifyDeleteAllModelAF" reRender="refbool,msgclearwarnings" status="fromclearversionstatus" />
+                                    <apex:actionFunction name="rerenderFromClearPlan" reRender="SelectListFromClearPeriod" />
+                                     
+                                    
+                                </apex:actionRegion>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <apex:commandButton value="Reset" styleClass="restTab" action="{!resetClearPlanning}" rerender="SelectListFromClearPeriod,SelectListFromClearYear"/>
+                                <apex:outputPanel id="refbool">
+                                    <input type="button" Class="gbutton setTab" onClick="deleteAllData('{!clearMessagePopup}','{!clearPlanningMessage}')" value="Delete All Data"/>
+                                </apex:outputPanel>
+                                <apex:actionFunction action="{!deleteAllModel}" name="deleteAllPlanningAction" rerender="refbool,msgclearwarnings,SelectListFromClearPeriod,SelectListFromClearYear" status="deletetatus" />
+                                <apex:actionStatus id="deletetatus" startText="Waiting...." StopText=""/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            
+            
+            </form>
+                
+        </div>
+        
+        <div id="view4" class="slds-tabs--default__content slds-show" role="tabpanel">
+        <br/>
+<div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                  <span class="slds-assistive-text">Info</span>                  
+                  <h2>
+                    
+                    <strong>Generate Revenue Backlog</strong>
+                  </h2>
+                </div>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                    <span class="slds-assistive-text">Info</span>                  
+                        <h2>
+                            <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                            </svg>
+                            <strong>Process Overview</strong>
+                            <p>
+                                <ul>
+                                    <li>This program looks at all opportunities selected within the configuration settings to calculate the corresponding Revenue Backlog.</li>
+                                    <li>The calculation is dependent on the Contract Value, Revenue Start Date, and Contract Term Length to calculate the Revenue Backlog.</li>
+                                    <li>You can only generate Revenue Backlog for <strong>Closed</strong> Planning Versions only.</li>
+                                </ul>
+                            </p>
+                        </h2>
+                </div>
+                <p>&nbsp;</p>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                    <span class="slds-assistive-text">Info</span>                  
+                        <h2>
+                            <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                                <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/action-sprite/svg/symbols.svg#preview')}"></use>
+                            </svg>
+                            <strong>Revenue Backlog Calculation</strong>
+                            <p>Revenue Backlog [End of Current Period] = Revenue Backlog [Previous Period] - Revenue Recognized [Current Period] - Revenue Adjustments [Current Period] + Contract Value "Won" [Current Period]
+                            </p>
+                        </h2>
+                </div>
+                <p>&nbsp;</p>
+                <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert" style="text-align:left;background:#F4F6F8;color:black;border:1px solid #DEE1E9;font: 100%/1.5 'Salesforce Sans', Arial, sans-serif;color: #16325c;">
+                    <span class="slds-assistive-text">Warning</span>
+                    <h2>  
+                        <svg aria-hidden="true" class="slds-icon icon-text-email slds-icon--small slds-m-right--x-small" style="fill: #16325c;">
+                            <use xlink:href="{!URLFOR($Resource.SLDS090, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                        </svg>                                    
+                        <strong>Warning</strong>
+                        <p>
+                            This process is assumes that all Revenue Recognized and Revenue Adjustments have been entered into the system. Any missing data will likely cause the calculation to yield incorrect results. All reports will be inadversely impacted.                                
+                        </p>
+                    </h2>
+                </div>
+                <br/>
+                <apex:pageMessages id="messagebx"/>
+                <apex:actionStatus id="oppstatus" StartText="waiting ...." StopText=""/>
+                <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                    <tbody>
+                        <tr>
+                            <td data-label="Planning Year label" >              
+                                <label class="slds-form-element__label" >Planning Year</label>
+                            </td>
+                            <td data-label="Planning Year">
+                                <apex:selectList value="{!ER_strPlanversion}" id="planversionBlock" multiselect="false" size="1" Styleclass="slds-select">
+                                <apex:selectOptions value="{!CPlanVersion}" />
+                                <apex:actionsupport event="onchange" action="{!onPlanningVersionChange}" status="oppstatus" rerender="messagebx"/>
+                            </apex:selectList>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">                
+
+                                <apex:commandButton value="Reset" styleClass="restTab" action="{!resetClearPlanning}" rerender="planversionBlock"/>
+                                <apex:commandButton value="Generate Revenue Backlog" StyleClass="gbutton setTab" action="{!SaveModel}" status="waitId" rerender="messagebx"/>
+                                <apex:actionstatus id="waitId" startText="Planning Model Creating ......." stopText=""/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+           
+        </div>
+        
+        </div>
+    </div>
+
+</apex:form>
+</body>
+<script>
+    $( document ).ready(function() {            
+    var parameter = '{!HTMLENCODE($CurrentPage.parameters.sfdc.tabName)}';
+    var Div1 = $("#manageDiv-ManageStatus");
+    var Div2 = $("#manageDiv-NewPlanningVersion");
+    Div1.addClass('hidden');
+    Div2.addClass('hidden');
+    if(parameter == '' || parameter == null){       
+        Div2.removeClass('hidden').addClass('unhidden');        
+    }
+    rerenderFromClearPlan();
+});
+function setFocusOnLoad() {} 
+function verifyDeleteAllModelJS() {
+    verifyDeleteAllModelAF();
+}
+</script>
+</html>
+</apex:page>

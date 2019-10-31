@@ -1,0 +1,207 @@
+<apex:page sidebar="false" controller="Forecastera_Planning_Workbench" showHeader="false"> 
+
+<html>
+
+<head>
+    <meta charset='utf-8'/>
+    <title>Forecastera Workbench</title>
+                   
+    <input type="hidden" id="gridhtmlpath" value="{!URLFOR($Resource.Forecastera_Resource1, '/ForeCastera/partials/grid.html')}"/>    
+    <input type="hidden" id="SFDCInstance" value="{!SFDCInstance}"/>
+    
+    <input type="hidden" id="Measure_PVId" value="{!$CurrentPage.parameters.M_PVId}"/>
+    <input type="hidden" id="Measure_MsIds" value="{!$CurrentPage.parameters.M_MsIds}"/>
+    <input type="hidden" id="Measure_OppIds" value="{!$CurrentPage.parameters.M_OppIds}"/>
+
+        
+    <apex:stylesheet value="{!URLFOR($Resource.Forecastera_Resource1, '/bower_components/bootstrap/dist/css/bootstrap.css')}"  /> 
+        <apex:stylesheet value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/css/styles.css')}"  /> 
+        <apex:stylesheet value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/css/chosen.css')}"  /> 
+       <apex:stylesheet value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/css/salesforce-lightning-design-system.css')}"  />
+        <apex:stylesheet value="{!URLFOR($Resource.Forecastera_Resource1, '/bower_components/angular-growl-2-master/build/angular-growl.css')}"  />  
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource1, '/bower_components/jquery/dist/jquery.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource1, '/bower_components/angular/angular.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/js/chosen.jquery.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/js/chosen.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource1, '/bower_components/angular-ui-router/release/angular-ui-router.js')}" /> 
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource1, '/bower_components/ng-file-upload-master/dist/ng-file-upload-shim.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource1, '/bower_components/ng-file-upload-master/dist/ng-file-upload.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource1, '/bower_components/angular-growl-2-master/build/angular-growl.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource1, '/ForeCastera/controllers/app.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource1, '/ForeCastera/models.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/js/jquery.forecasteraFreezeTblClmns.js')}" />
+       
+        
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/js/underscore-min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/js/ui-bootstrap-tpls-0.13.0.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/js/bootstrap.min.js')}" />
+        
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/js/truncate.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/js/ng-currency.js')}" />            
+        <apex:includeScript value="{!URLFOR($Resource.Forecastera_Resource_Ex, '/public/js/angularjs-dropdown-multiselect.js')}" /> 
+        
+        
+        
+</head>
+    
+    
+    
+    <style>
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+      display: none !important;
+    }
+        .table {
+            width: auto;
+            margin-bottom: 20px;
+        }
+        .affix{
+            width: 100%;
+            z-index: 1;
+        }
+        #detaildView.affix{
+            top:200px;
+        }
+        #header
+        {
+            -webkit-backface-visibility: hidden;
+        }
+    </style>
+        
+        
+        <body ng-app="app" fire-custom-event="true">
+        <div class="container-fluid">
+
+            <div id="growl"></div>
+            <div ng-controller="ForeCasteraFiltersController" id="filterContainer">
+            <div id="sticky-anchor"></div>
+                <div class="slds-page-header" role="banner" id="header">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-has-flexi-truncate">
+                            <div class="slds-grid">
+                                <div class="slds-media__figure">        
+                                    <span class="slds-avatar slds-avatar--large"> 
+                                        <apex:image url="{!URLFOR($Resource.Forecastera_Resource_Ex,'/public/images/fcst_logo.png')}" alt="ForecastEra" />      
+                                         
+                                    </span>     
+                                </div>
+                                <div class="slds-grid slds-type-focus slds-no-space">
+                                    <dl>
+                                        <dt>
+                                        <p class="slds-text-heading--label" title="ForecastEra" style="padding-left:2px; ">ForecastEra</p>
+                                        </dt>
+                                        <dd>
+                                            <h1 class="slds-text-heading--medium slds-truncate" title="My Leads (truncates)">Planning Workbench</h1>
+                                            <p class="" title="Field 1" style="padding-left:2px; color: #16325c;" ng-show="!showFilterBox">{!$CurrentPage.parameters.M_Pvname}</p>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-no-flex slds-align-top">
+                            <div class="slds-grid">
+                                <form name="form">
+                                    <div class="slds-button-group slds-button-space-left" role="group">
+
+                                      
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="slds-page-header filterbox1" role="banner" ng-show="showFilterBox">
+
+                    <div class="slds-grid slds-page-header__detail-row">
+                        <div class="slds-col--padded slds-size--1-of-6">
+                            <dl>
+                                <dt>
+                                <p class="slds-text-heading--label slds-truncate" title="Field 1">Planning Version</p>
+                                </dt>
+                                <dd>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <select id="selectSample1" class="slds-select" ng-model="filters.planningVersion" ng-options="version.Name for version in filtersData.PlanningVersion"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="slds-col--padded slds-size--1-of-6">
+                            <dl>
+                                <dt>
+                                <p class="slds-text-heading--label slds-truncate" title="Field2 (3)">Measures
+                                </p>
+                                </dt>
+                                <dd>
+                                    <div class="slds-form-element" id="measuresDropdown">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <div  ng-dropdown-multiselect="true" options="filtersData.Measures" selected-model="filters.Measures" extra-settings="example2settings"></div>
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="slds-col--padded slds-size--1-of-2">
+                            <dl>
+                                <dt>&nbsp;</dt>
+                                <dd><button  id="btnworkbench"  class="slds-button slds-button--brand" ng-click="loadWorkbench()">{{isWorkbenchLoadingName}}</button></dd>
+                            </dl>
+
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="slds-page-header filterbox2" role="banner" ng-show="showFilterBox" >
+
+                    <div class="slds-grid slds-page-header__detail-row">
+                        <div class="slds-col--padded slds-size--1-of-4">
+                            <dl>
+                                <dt>
+                                <p class="slds-text-heading--label slds-truncate" title="Field2 (3)">Display Totals
+                                </p>
+                                </dt>
+                                <dd>
+                                    <form class="slds-form--inline">
+                                        <div class="slds-form-element">
+                                            <label class="slds-checkbox" for="checkboxSample1">
+                                                <input name="checkbox"  ng-click="showAccountTotals($event);"  type="checkbox" id="checkboxSample1" />
+                                                <span class="slds-checkbox--faux"></span>
+                                                <span class="slds-form-element__label">Display Account Totals</span>
+                                            </label>
+                                        </div>
+                                    </form>
+                                </dd>
+                            </dl>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+            <main ng-controller="ForeCasteraController">
+                <ui-view autoscroll="false"></ui-view>
+            </main>
+        </div>
+        <script type="text/javascript"> 
+            $( document ).ready(function() {
+                var ele=document.getElementById('btnworkbench');                                                             
+                ele.click();
+            });     
+            
+        </script>
+    </body>
+    
+</html>
+
+</apex:page>

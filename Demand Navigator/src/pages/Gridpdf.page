@@ -1,0 +1,3 @@
+<apex:page controller="GridPDF" readOnly="true"  sidebar="false" contentType="application/vnd.ms-excel#Forecastera.xls" cache="true" >
+<apex:outputText value="{!JSENCODE(jsonOutput)}" escape="false"></apex:outputText>
+</apex:page>

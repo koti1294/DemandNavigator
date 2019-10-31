@@ -1,0 +1,72 @@
+<apex:page standardController="Opportunity" extensions="DemandPlanningHandler">
+  
+    
+    <apex:sectionHeader title="Opportunity" subtitle="DemandPlanning"/>
+    
+    <apex:form >
+        <apex:pageBlock title="Opportunity Detail">
+            <apex:actionfunction name="SaveDemandModelAF" action="{!updateModel}" rerender="dresult">
+                <apex:param value="" name="mid"/>
+                <apex:param value="" name="value"/>
+            </apex:actionfunction>
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Back" action="{!GotoBack}" immediate="true"/>
+            </apex:pageblockbuttons>
+            <apex:pageBlockSection >
+                   <apex:outputField value="{!MOpportunity.Name}"/>
+                   <apex:outputField value="{!MOpportunity.StageName}"/>
+                   <apex:outputField value="{!MOpportunity.Deal_Duration__c}"/>
+                    <apex:outputField value="{!MOpportunity.Probability}"/>                     
+                    <apex:outputField value="{!MOpportunity.Onsite_Deal_Month__c}"/>
+                    <apex:outputField value="{!MOpportunity.Amount}"/>    
+                    <apex:outputField value="{!MOpportunity.Offshore_Deal_Month__c}"/>                     
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Configuration Information">
+                   <apex:outputField value="{!MOpportunity.Onsite_Resource__c}"/>
+                   <apex:outputField value="{!MOpportunity.Offshore_Resource__c}"/>
+                   <apex:outputField value="{!MOpportunity.Rate_per_Head_onsite__c}"/>
+                   <apex:outputField value="{!MOpportunity.Rate_per_Head_offshore__c}"/>
+                   <apex:outputField value="{!MOpportunity.Onsite_Ratio__c}"/>
+                   <apex:outputField value="{!MOpportunity.Offshore_Ratio__c}"/>
+                   <apex:outputField value="{!MOpportunity.Total_Deal__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock id="pmdetail" title="Planning Models">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" >Planning Version</label><br/>
+                <apex:outputpanel >
+                    <apex:selectList value="{!strVersion}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!ModelVersions}"/>
+                        <apex:actionSupport event="onchange"  action="{!getPlanningModel}"  reRender="dresult,messagebx" Status="getDataStatus"/>
+                    </apex:selectList>
+                    <apex:actionStatus id="getDataStatus" starttext="Wait...." stopText=""/>
+                </apex:outputpanel>
+            </div>
+            <apex:pageMessages id="messagebx" escape="false" />
+            <apex:pageBlockButtons >
+                <apex:commandButton rendered="{!isClosedOpp}" value="Save" action="{!saveModels}" immediate="true" />
+                <apex:commandButton rendered="{!!isClosedOpp}" value="Save" action="{!saveModels}" rerender="messagebx,dresult" />
+                <apex:commandButton disabled="{!isClosedOpp}" value="Reset" action="{!resetModels}" />
+                
+            </apex:pageBlockButtons>
+            <apex:commandLink style="float:right" action="{!downloadCSV}" value="Download file" rerender=""/>
+            <div style="max-width:1050px;overflow-x: auto;">
+            <apex:outputpanel id="dresult">
+            
+            <div id="DemandData"></div> 
+            <script>
+                    
+                    document.getElementById('DemandData').innerHTML = '{!JSENCODE(DemandData)}';
+                
+            </script>
+           </apex:outputpanel>
+            </div>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+        function SaveDemandModel(modelId,ele){
+            SaveDemandModelAF(modelId,ele.value);
+        }
+    </script>
+</apex:page>

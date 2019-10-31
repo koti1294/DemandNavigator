@@ -1,0 +1,19 @@
+<apex:page controller="GridJSONService" readOnly="false" contentType="application/json"  showHeader="false" sidebar="false" standardStylesheets="false" >
+   <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+             <apex:includeScript value="{!URLFOR($Resource.jquery_3_1_1_min)}"/>
+        </head>
+        <body>
+        <apex:form >
+		    <apex:actionFunction name="start" action="{!StartUpAction}"/>
+		    <script>
+		        j$ = jQuery.noConflict();
+		        j$().ready(function() {
+		            start();
+		        });
+		    </script>
+		</apex:form>
+        	{!Output}
+        </body>
+    </html>
+</apex:page>

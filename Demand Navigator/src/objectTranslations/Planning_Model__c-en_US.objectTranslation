@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>FCST Planning Model</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>FCST Planning Models</value>
+    </caseValues>
+    <fields>
+        <label><!-- Amount --></label>
+        <name>Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Business Type --></label>
+        <name>Business_Type__c</name>
+        <picklistValues>
+            <masterLabel>Existing Business</masterLabel>
+            <translation><!-- Existing Business --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Pipeline</masterLabel>
+            <translation><!-- Pipeline --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Comments --></label>
+        <name>Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Description --></label>
+        <name>Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Effort/Cost --></label>
+        <name>Effort_Cost__c</name>
+    </fields>
+    <fields>
+        <label><!-- Fiscal Period New --></label>
+        <name>Fiscal_Period_New__c</name>
+    </fields>
+    <fields>
+        <label><!-- Fiscal Period --></label>
+        <name>Fiscal_Period__c</name>
+        <relationshipLabel><!-- FCST Planning Models --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- ModelName --></label>
+        <name>ModelName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Opportunity --></label>
+        <name>Opportunity__c</name>
+        <relationshipLabel><!-- FCST Planning Models --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Planning Measure --></label>
+        <name>Planning_Measure__c</name>
+        <relationshipLabel><!-- FCST Planning Models --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Planning Version --></label>
+        <name>Planning_Version__c</name>
+        <relationshipLabel><!-- FCST Planning Models --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Record Source --></label>
+        <name>Record_Source__c</name>
+    </fields>
+    <fields>
+        <label><!-- Resource offshore --></label>
+        <name>Resource_offshore__c</name>
+    </fields>
+    <fields>
+        <label><!-- Resource onsite --></label>
+        <name>Resource_onsite__c</name>
+    </fields>
+    <fields>
+        <label><!-- Revenue Amount --></label>
+        <name>Revenue_Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Revenue Proration --></label>
+        <name>Revenue_Proration__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

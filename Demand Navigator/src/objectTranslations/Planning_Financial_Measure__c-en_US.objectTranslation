@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>FCST Planning Measure</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>FCST Planning Measures</value>
+    </caseValues>
+    <fields>
+        <label><!-- Automatically Calculated --></label>
+        <name>Automatically_Calculated__c</name>
+    </fields>
+    <fields>
+        <label><!-- Calculation Methodology Description --></label>
+        <name>Calculation_Methodology_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- General Ledger Account --></label>
+        <name>General_Ledger_Account__c</name>
+    </fields>
+    <fields>
+        <label><!-- Measure Description --></label>
+        <name>Measure_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Measure Type --></label>
+        <name>Measure_Type__c</name>
+        <picklistValues>
+            <masterLabel>Asset</masterLabel>
+            <translation><!-- Asset --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Expense</masterLabel>
+            <translation><!-- Expense --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Income</masterLabel>
+            <translation><!-- Income --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>KPI</masterLabel>
+            <translation><!-- KPI --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Liability</masterLabel>
+            <translation><!-- Liability --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Record Source --></label>
+        <name>Record_Source__c</name>
+    </fields>
+    <fields>
+        <label><!-- Restricted by Revenue Term --></label>
+        <name>Restricted_by_Revenue_Term__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unit of Measure --></label>
+        <name>Unit_of_Measure__c</name>
+        <picklistValues>
+            <masterLabel>Currency</masterLabel>
+            <translation><!-- Currency --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Days</masterLabel>
+            <translation><!-- Days --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>FTE</masterLabel>
+            <translation><!-- FTE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Percentage</masterLabel>
+            <translation><!-- Percentage --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Quantity</masterLabel>
+            <translation><!-- Quantity --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>FCST Planning Measure Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- This field is required when the Check Box &quot;Automatically Calculated&quot; is checked --></errorMessage>
+        <name>Methodology_Description_Rule</name>
+    </validationRules>
+</CustomObjectTranslation>

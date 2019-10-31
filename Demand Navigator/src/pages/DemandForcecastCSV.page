@@ -1,0 +1,4 @@
+<apex:page standardController="Opportunity" extensions="DemandPlanningHandler" cache="true" contentType="application/vnd.ms-excel#DemandForcecase.xls">
+     <div id="DemandData"></div>
+     <script>document.getElementById('DemandData').innerHTML = '{!JSENCODE(DemandData)}';</script>            
+</apex:page>

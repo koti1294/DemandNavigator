@@ -1,0 +1,179 @@
+<apex:page controller="LT_ComparePlanningVersion"  contentType="application/vnd.ms-excel#ComparePlanningVersion.xls" cache="true">  
+    <html>
+    <head>
+    <!-- <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'/> -->
+    <apex:stylesheet value="{!URLFOR($Resource.Forecastera_Support, '/Montserrat_family.css')}" />
+    <style>
+        div{
+           font-family: Montserrat;           
+        }
+    </style>    
+    </head>
+    <body>
+        <apex:form > 
+             <div style="background-color:#F7F9FB;border:1px solid #EEF0F3;padding:10px">
+                <table style="width:100%">
+                    <tr>
+
+                        <td style="width:20%;text-align:left;vertical-align:top">
+                            <font style="color: #969799;font-weight:bold    font-size: 10px;  "> 1 PLANNING VERSION</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!mapMPV[strFromPlan].Name}</font>
+                        </td>
+                        <td  style="width:20%;text-align:left;vertical-align:top">
+                            <font style="color: #969799;font-weight:boldfont-size: 10px;  "> 2. PLANNING VERSION</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!mapMPV[strFromPlan2].Name}</font> 
+                        </td>
+                        <td style="width:20%;text-align:left;vertical-align:top">
+                            <font style="color: #969799;font-weight:boldfont-size: 10px;  "> QUARTER</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!strQuarter}</font>
+                        </td>
+                        <td style="width:20%;text-align:left;vertical-align:top">
+                            <font style="color: #969799;font-weight:boldfont-size: 10px;  "> ACCOUNT OWNER</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!strAccOwner}</font>
+                        </td>
+                        <td style="width:20%;text-align:left;vertical-align:top">
+                            <font style="color: #969799;font-weight:boldfont-size: 10px;  "> BUSINESS UNIT</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!dummyOpportunity.BussinessUnit__c}</font>
+                        </td>
+                        <td style="width:20%;text-align:left;vertical-align:top">
+                            <font style="color: #969799;font-weight:boldfont-size: 10px;  "> DIVISION</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!dummyOpportunity.Division__c}</font>
+                        </td>
+                        <td style="width:20%;text-align:left;vertical-align:top">
+                            <font style="color: #969799;font-weight:boldfont-size: 10px;  ">ACCOUNT</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!sAccountText}</font>
+                            
+                        </td>
+                        <td style="width:20%;text-align:left;vertical-align:top">
+                            <font style="color: #969799;font-weight:boldfont-size: 10px;  ">OPPORTUNITY</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!sOpportunityText}</font>
+                            
+                        </td>
+                    </tr>                           
+                </table>
+            </div>
+            <br/>
+            <br/>
+            
+                                     <div id="containerrecords">
+
+                                        <table class="slds-table slds-table--bordered" id="revpriotab">
+                                            <thead>
+                                                <tr class="slds-text-heading--label">
+                                                
+                                                    <th scope="col"><span class="slds-truncate">Account</span></th>
+                                                    <th scope="col"><span class="slds-truncate">Opportunity</span></th>
+                                                    <th scope="col"><span class="slds-truncate">Revenue Start Date</span></th>
+                                                    <th scope="col"><span class="slds-truncate">Contract Value</span></th>
+                                                    <th scope="col"><span class="slds-truncate">Planning version 1</span></th>
+                                                    <th scope="col"><span class="slds-truncate">Planning version 2</span></th>
+                                                    <th scope="col"><span class="slds-truncate">Difference</span></th>
+ 
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <apex:variable var="accCount" value="{!0}" />
+                                                <apex:repeat value="{!lstTParent}"  var="acc">
+                                                <apex:variable var="accCount" value="{!accCount+1}" />
+                                                    <tr class="slds-hint-parent">
+                                                        <td data-label="Account-name" role="row">
+                                                            <span class="slds-truncate">{!accCount}.</span> 
+                                                            <b><span class="slds-truncate"><a href="/{!acc.AccId}" target="_blank">{!acc.AccName}</a></span></b>
+                                                        </td>
+                                                    
+                                                       <td data-label="Opportunity-name" style="text-align: center">
+                                                            
+                                                            <span class="slds-truncate"><b>{!Acc.OppCount}</b></span>
+                                                        </td>
+                                                        <td data-label="Rdateopp" style="text-align: center">
+                                                            <span class="slds-truncate"> </span>
+                                                        </td>
+                                                        <td data-label="Contractvalue" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            <b>{!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                                <apex:param value="{!acc.OppTotal}"/>  
+                                                             </apex:outputText></b>
+                                                            </span>
+                                                        </td>
+                                                        <td data-label="APVValue1" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            <b>{!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">
+                                                            <apex:param value="{!Acc.p1Total}" /> 
+                                                            </apex:outputText></b>
+                                                            </span>
+                                                        </td>
+                                                        <td data-label="APVValue2" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            <b>{!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">
+                                                            <apex:param value="{!Acc.p2Total}" /> 
+                                                            </apex:outputText></b>
+                                                            </span>
+                                                        </td>
+                                                        <td data-label="APVDifference" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            <b>{!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">
+                                                            <apex:param value="{!Acc.p1p2diff}" /> 
+                                                            </apex:outputText></b>
+                                                            </span>
+                                                        </td>
+
+                                                    </tr>
+                                                
+                                                <apex:repeat value="{!acc.lstTableValue}"  var="opp">
+                                                    <tr class="slds-hint-parent" >
+                                                        <td colspan="1">
+                                                             
+                                                            
+                                                        </td>
+                                                    
+                                                        <td data-label="Opportunity-name" style="text-align: left">
+                                                            <span class="slds-truncate" style="color:{!opp.licolor}">{!opp.OppName}</span>
+                                                        </td>
+                                                        <td data-label="Rdateopp" style="text-align: center">
+                                                            <span class="slds-truncate">
+                                                            <apex:outputText value="{0, date, MM/dd/yyyy}">
+                                                            <apex:param value="{!opp.Rdateopp}"/>
+                                                            </apex:outputText></span>
+                                                        </td>
+                                                        <td data-label="Contractvalue" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">  
+                                                            <apex:param value="{!opp.Contractvalue}"/>  
+                                                            </apex:outputText> 
+                                                            </span>
+                                                        </td>
+                                                        <td data-label="PVValue1" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">
+                                                            <apex:param value="{!opp.Value1}" /> 
+                                                            </apex:outputText>
+                                                            </span>
+                                                        </td>
+                                                        <td data-label="PVValue2" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">
+                                                            <apex:param value="{!opp.Value2}" /> 
+                                                            </apex:outputText>
+                                                            </span>
+                                                        </td>
+                                                        <td data-label="PVDifference" style="text-align: right">
+                                                            <span class="slds-truncate">
+                                                            {!userCurrencySign}<apex:outputText value="{0, number, ###,###,###,##0}">
+                                                            <apex:param value="{!opp.Difference}" /> 
+                                                            </apex:outputText>
+                                                            </span>
+                                                        </td>
+
+                                                    </tr>
+                                                </apex:repeat>
+                                                </apex:repeat>
+                       
+                                            </tbody>
+                                        </table>
+                                    
+                                </div>
+                               
+        </apex:form>            
+    </body>    
+    </html>
+</apex:page>

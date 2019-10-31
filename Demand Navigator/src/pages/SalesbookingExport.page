@@ -1,0 +1,173 @@
+<apex:page controller="Bookings_PrioritizationController" contentType="application/vnd.ms-excel#SalesBooking.xls"   cache="true">
+<html>
+
+    <body>
+   
+    <div>
+    <apex:form >
+        <apex:pageMessages id="messagebx"/>
+        
+        <div style="">     
+            <div style="background-color:#F7F9FB;border:1px solid #EEF0F3;">
+                <table style="width:100%">                        
+                    <tr>                                
+                        <td colspan="4">
+                            <font style="color: #969799;    font-size: 10px;  ">REPORT</font><br/>
+                            <font style="font-size: 20px;  font-normal: bold;  color: #26385F;">BOOKING PRIORITIZATION</font>
+                            <br/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top">                                    
+                            <font style="color: #969799;    font-size: 10px;  "> DESCRIPTION</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">Prioritize the opportunities which has the highest Bookings Across periods.</font>
+                        </td>
+
+                        <td style="vertical-align:top">                                    
+                            <font style="color: #969799;    font-size: 10px;  "> VIEWING AS</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!$User.FirstName} {!$User.LastName}</font>
+                        </td>
+                        <td style="vertical-align:top">                                   
+                            <font style="color: #969799;    font-size: 10px;  "> LAST REFRESH</font><br/>
+                            <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">
+                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!LastLoginDate}" /> 
+                                </apex:outputText>
+                            </font>
+                        </td>
+                       
+                    </tr>
+                </table>
+
+            </div>
+        
+            <br/>
+            
+            <div id="expand">
+                <div style="background-color:#F7F9FB;border:1px solid #EEF0F3;padding:10px">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;    font-size: 10px;  "> PLANNING YEAR</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!HTMLENCODE(strFromPlanYear)}</font>
+                            </td>
+                            <td  style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;font-size: 10px;  ">BUSINESS UNIT</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!dummyOpportunity.BussinessUnit__c}</font> 
+                            </td>
+                             <td  style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;font-size: 10px;  ">DIVISION</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!dummyOpportunity.Division__c}</font> 
+                            </td>
+                             <td  style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;font-size: 10px;  ">BUSINESS UNIT</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!dummyOpportunity.BussinessUnit__c}</font> 
+                            </td>
+                           <td  style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;font-size: 10px;  ">STAGE</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;"><apex:outputText value="{!OppStages}"/></font> 
+                            </td>
+                            
+                            <td style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;font-size: 10px;  "> ACCOUNT</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!HTMLENCODE(sAccountText)}</font>
+                            </td>
+                             <td style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;font-size: 10px;  "> ACCOUNT OWNER</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!HTMLENCODE(strAccOwner)}</font>
+                            </td>
+                            
+                            <td style="width:20%;text-align:left;vertical-align:top">
+                                <font style="color: #969799;font-size: 10px;  ">OPPORTUNITY</font><br/>
+                                <font style="font-size: 11px;  font-normal: bold;  color: #26385F;">{!HTMLENCODE(sOpportunityText)}</font>
+                                
+                            </td>
+                        </tr>                           
+                    </table>
+                </div>
+            </div>
+            <br/>
+            <div>
+                <table style="border:1px solid #000000;" >
+                    <tr style="background-color:#D1EAF1">
+                        
+                            <td style="font-size:10px;text-align:left;border-bottom:1px solid #D2D2D2">Peiords/Quarter</td>
+                            <td style="font-size:10px;text-align:left;border-bottom:1px solid #D2D2D2">Measure Total</td>
+                       
+                    </tr>
+                    <apex:repeat value="{!data}" var="h">
+                            <tr >
+                                
+                                    <td style="text-align:left;font-size:10px;border-bottom:1px solid #D2D2D2">{!h.name}</td>
+                                    <td style="text-align:left;font-size:10px;border-bottom:1px solid #D2D2D2">{!h.data1}</td>
+                               
+                            </tr>
+                       </apex:repeat> 
+                 </table>                
+            </div>
+            <br/>
+            <apex:outputPanel id="chartmonth" >
+        
+            <div id="containerrecords">
+                <apex:outputpanel >
+                    <apex:variable var="total" value="{!0}"/>
+                    <table style="border:1px solid #000000"  width="100%" >
+                        <thead >
+                            <tr>
+                                <th scope="col"><span class="slds-truncate">Account</span></th>
+                                <th scope="col"><span class="slds-truncate">Opportunity</span></th>
+                                <th scope="col"><span class="slds-truncate">Stage</span></th>
+                                <th scope="col"><span class="slds-truncate">Contract Term</span></th>
+                                <th scope="col"><span class="slds-truncate">Contract Value</span></th>
+                                <th scope="col"><span class="slds-truncate">Fiscal Period</span></th>
+                                <th scope="col"><span class="slds-truncate">Revenue Amount</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <apex:repeat value="{!PriorityOpportunity}"  var="w">
+                                <tr class="slds-hint-parent">
+                                    <td data-label="Account-name" role="row">
+                                        <b><span class="slds-truncate">{!HTMLENCODE(w.opp.Account.Name)}</span></b>
+                                    </td>
+                                
+                                    <td data-label="Opportunity-name">
+                                        <b><span class="slds-truncate" style="color:{!HTMLENCODE(w.licolor)}">{!HTMLENCODE(w.opp.Name)}</span></b>
+                                    </td>
+                                    <td data-label="Opportunity-name">
+                                        <span class="slds-truncate">{!HTMLENCODE(w.opp.StageName)}</span>
+                                    </td>                                                       
+                                    <td data-label="ContractTerm" style="text-align: right">
+                                        <span class="slds-truncate"><apex:outputText value="{!w.opp.Deal_Duration__c}" />  </span>
+                                    </td>
+                                    <td data-label="Contractvalue" style="text-align: right">
+                                        <span class="slds-truncate">{!HTMLENCODE(userCurrencySign)}
+                                        <apex:outputText value="{0, number, ###,###,###,###}">  
+                                            <apex:param value="{!w.opp.Deal_TCV__c}"/>  
+                                         </apex:outputText> 
+                                        </span>
+                                    </td>
+                                    <td data-label="Fiscal Period">
+                                        <span class="slds-truncate"><a href="/{!w.FiscalPeriodId}">{!HTMLENCODE(w.FiscalPeriodName)}</a></span>
+                                    </td>
+                                    <td data-label="Revenue Amount" style="text-align: right">
+                                        <span class="slds-truncate">{!HTMLENCODE(userCurrencySign)}
+                                        <apex:outputText value="{0, number, ###,###,###,###}">  
+                                            <apex:param value="{!w.FiscalAmount}"/>  
+                                         </apex:outputText>
+                                        </span>
+                                    </td>
+
+                                </tr>
+                            </apex:repeat>
+                            
+                        </tbody>
+                    </table>
+                </apex:outputpanel>
+            </div>
+            </apex:outputpanel>
+        </div>
+    </apex:form>
+    </div>
+    </body>
+    </html>
+</apex:page>
